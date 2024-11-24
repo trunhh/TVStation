@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
+using TVStation.Data.Constant;
 using TVStation.Data.Model;
+using TVStation.Data.QueryObject;
 using TVStation.Data.Request;
 using TVStation.Data.Response;
-using TVStation.Services;
+using TVStation.Repositories.IRepositories;
 
 namespace TVStation.Controllers
 {
@@ -13,68 +16,68 @@ namespace TVStation.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly SignInManager<User> _signInManager;
-        public UserController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager)
+        public UserController(UserManager<User> userManager)
         {
             _userManager = userManager;
-            _tokenService = tokenService;
-            _signInManager = signInManager;
         }
-
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterReq req)
+        [HttpGet("{username}")]
+        [Authorize]
+        public IActionResult GetByUsername([FromRoute] string username)
         {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-
-                var user = new User
-                {
-                    UserName = req.Username,
-                    Email = req.Email,
-                    Name = req.Name
-                };
-
-                var createUser = _userManager.CreateAsync(user, req.Password).GetAwaiter().GetResult();
-
-                if (createUser.Succeeded)
-                {
-                    var roleResult = _userManager.AddToRoleAsync(user, "Employee").GetAwaiter().GetResult();
-                    if (roleResult.Succeeded)
-                        return Ok(new NewUserRes
-                        {
-                            UserName = user.UserName,
-                            Email = user.Email,
-                            Token = _tokenService.CreateToken(user)
-                        });
-                    else return StatusCode(500, roleResult.Errors);
-
-                }
-                else return StatusCode(500, createUser.Errors);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-
-        }
-
-        [HttpPost("login")]
-        public IActionResult Login(LoginReq req)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            var user = _userManager.Users.FirstOrDefault(u => u.UserName == req.Username);
+            var user = _userManager.Users.FirstOrDefault(u => u.UserName == username);
             if (user == null) return Unauthorized("Invalid username!");
-            var result = _signInManager.CheckPasswordSignInAsync(user, req.Password, false).GetAwaiter().GetResult();
-            if (!result.Succeeded) return Unauthorized("Wrong password!");
-            return Ok(new NewUserRes
+            return Ok(new UserRes
             {
                 UserName = user.UserName,
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user)
+                Name = user.Name,
             });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Get([FromQuery]UserQuery query)
+        {
+            var queryable = _userManager.Users;
+            if (query.SiteMapId != null && query.SiteMapId != Guid.Empty)
+            {
+                queryable = queryable.Include(u => u.SiteMap)
+                    .AsQueryable()
+                    .Where(u => u.SiteMap != null && u.SiteMap.Id == query.SiteMapId);
+            }
+            if (!string.IsNullOrEmpty(query.Keyword))
+            {
+                queryable = queryable.Where(u => u.Name.Contains(query.Keyword)
+                                                || (u.UserName != null && u.UserName.Contains(query.Keyword))
+                                                || (u.Email != null && u.Email.Contains(query.Keyword)));
+            }
+
+            return Ok(new Paginated<User>
+            {
+                Content = queryable.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList(),
+                TotalPages = (int)MathF.Ceiling(queryable.Count() / (float)query.PageSize)
+            });
+        }
+
+        [HttpPut]
+        [Authorize]
+        public IActionResult Update([FromBody]UserUpdateReq req)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
+            if (userIdClaim == null) return Unauthorized("User ID not found in claims.");
+            var user = _userManager.Users
+                .Include(u => u.SiteMap)
+                .FirstOrDefaultAsync(u => u.Id == userIdClaim)
+                .GetAwaiter().GetResult();
+            if (user == null) return NotFound("User not found.");
+            if (!string.IsNullOrEmpty(req.Address)) user.Address = req.Address;
+            if (!string.IsNullOrEmpty(req.Email)) user.Email = req.Email;
+            if (!string.IsNullOrEmpty(req.Name)) user.Name = req.Name;
+            if (!string.IsNullOrEmpty(req.PhoneNumber)) user.PhoneNumber = req.PhoneNumber;
+            var update = _userManager.UpdateAsync(user).GetAwaiter().GetResult();
+            if (!update.Succeeded) return StatusCode(500, "Failed to update user info.");
+            return Ok(user);
         }
     }
 }

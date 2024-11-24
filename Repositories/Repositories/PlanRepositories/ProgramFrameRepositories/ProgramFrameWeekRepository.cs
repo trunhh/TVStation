@@ -11,7 +11,9 @@ namespace TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepos
         public ProgramFrameWeekRepository(AppDbContext context) : base(context) { }
         protected override IQueryable<ProgramFrameWeek> GetQueriedData(ProgramFrameWeekQuery query)
         {
-            return base.GetQueriedData(query).Where(s => s.Week == query.Week);
+            var queryable = base.GetQueriedData(query);
+            if (query.Week != null) queryable = queryable.Where(s => s.Week == query.Week);
+            return queryable;
         }
     }
 }

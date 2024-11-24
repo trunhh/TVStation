@@ -8,7 +8,7 @@
         public bool IsPersonal { get; set; }
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
-        public int Year { get; set; }
-        public int Week { get; set; }
+        public int? Year { get; set; }
+        public int? Week { get; set; }
     }
 }

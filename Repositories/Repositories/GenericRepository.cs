@@ -77,8 +77,8 @@ namespace TVStation.Repositories.Repositories
             queryable = queryable.OrderByDescending(s => s.CreatedDate);
             return new Paginated<T>
             {
-                Data = queryable.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList(),
-                PageCount = (int)MathF.Ceiling(queryable.Count() / (float)query.PageSize)
+                Content = queryable.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList(),
+                TotalPages = (int)MathF.Ceiling(queryable.Count() / (float)query.PageSize)
             };
         }
 

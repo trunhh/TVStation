@@ -1,4 +1,5 @@
-﻿using TVStation.Data.Model;
+﻿using System.Linq;
+using TVStation.Data.Model;
 using TVStation.Data.Model.Plans.ProgramFrames;
 using TVStation.Data.QueryObject.Plans.ProgramFrames;
 using TVStation.Repositories.IRepositories;
@@ -12,8 +13,16 @@ namespace TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepos
 
         protected override IQueryable<ProgramFrameBroadcast> GetQueriedData(ProgramFrameBroadcastQuery query)
         {
-            return base.GetQueriedData(query)
-                .Where(s => s.Airdate > query.StartDate && s.Airdate < query.EndDate);
+            var queryable = base.GetQueriedData(query);
+            if (query.StartDate != null)
+            {
+                queryable = queryable.Where(s => s.Airdate > query.StartDate);
+            }
+            if (query.EndDate != null)
+            {
+                queryable = queryable.Where(s => s.Airdate < query.EndDate);
+            }
+            return queryable;
         }
     }
 }

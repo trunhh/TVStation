@@ -13,14 +13,20 @@ namespace TVStation.Repositories.Repositories.PlanRepositories.ProductionPlanRep
 
         protected override IQueryable<T> GetQueriedData(Q query)
         {
-            var queryable = base.GetQueriedData(query)
-                .Where(s => s.Airdate > query.StartDate
-                && s.Airdate < query.EndDate)
-                .Include(s => s.SiteMap)
-                .AsQueryable();
-            if (query.SiteMapId != Guid.Empty)
+            var queryable = base.GetQueriedData(query);
+            if (query.StartDate != null)
             {
-                queryable = queryable.Where(s => s.SiteMap != null && s.SiteMap.Id == query.SiteMapId);
+                queryable = queryable.Where(s => s.Airdate > query.StartDate);
+            }
+            if (query.EndDate != null) {
+                queryable = queryable.Where(s => s.Airdate < query.EndDate);
+            }
+            if (query.SiteMapId != null && query.SiteMapId != Guid.Empty)
+            {
+                queryable = queryable
+                    .Include(s => s.SiteMap)
+                    .AsQueryable()
+                    .Where(s => s.SiteMap != null && s.SiteMap.Id == query.SiteMapId);
             }
             return queryable;
         }

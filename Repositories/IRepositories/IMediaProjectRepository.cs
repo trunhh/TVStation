@@ -1,4 +1,4 @@
-﻿using TVStation.Data.Model.Plans.Productions;
+﻿using TVStation.Data.Model.Plans;
 using TVStation.Data.QueryObject.Plans.Productions;
 using TVStation.Data.Request;
 

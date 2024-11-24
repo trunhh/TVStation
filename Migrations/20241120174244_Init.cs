@@ -32,6 +32,8 @@ namespace TVStation.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -193,7 +195,6 @@ namespace TVStation.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsPersonal = table.Column<bool>(type: "bit", nullable: false),
                     SiteMapId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Airdate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MediaUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -357,9 +358,9 @@ namespace TVStation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "179392c3-1224-454c-87ed-ac42fe4ccfcc", "2d0e0f75-2894-4b7a-b442-b7a31f639843", "Manager", "MANAGER" },
-                    { "1b06abdb-bbc1-495b-bf0c-4f376bcee8d9", "b5598a07-ce7e-4906-b1fc-3c2ec891a744", "Employee", "EMPLOYEE" },
-                    { "ea8b7ccd-26b1-4321-8ca9-2c9d19496449", "f5f69016-7d7e-4316-ad70-c258d17ea5ed", "Admin", "ADMIN" }
+                    { "49a3412f-73d7-4ef4-819b-347e125db64e", "ad435e56-a21d-4a12-b0f7-85ccc22c06a1", "Employee", "EMPLOYEE" },
+                    { "dd3a3608-f3be-4c0e-ad9c-71f3bd5c072d", "3a162ec2-f7e4-4b9e-9312-06683ef474d0", "Admin", "ADMIN" },
+                    { "f664c215-c3a4-45fd-9267-1e29dab64920", "b9338db7-49ea-4943-8961-55929caee52a", "Manager", "MANAGER" }
                 });
 
             migrationBuilder.CreateIndex(

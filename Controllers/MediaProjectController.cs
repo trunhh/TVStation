@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using TVStation.Data.Constant;
 using TVStation.Data.Model;
+using TVStation.Data.Model.Plans;
 using TVStation.Data.Model.Plans.Productions;
 using TVStation.Data.QueryObject.Plans.Productions;
 using TVStation.Data.Request;
@@ -26,25 +27,28 @@ namespace TVStation.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public IActionResult GetAll([FromQuery] MediaProjectQuery query)
+      //  [Authorize]
+        public IActionResult GetAll([FromBody] MediaProjectQuery query)
         {
-            var data =_repository.GetAll(query);
+            var data = _repository.GetAll(query);
             return Ok(data);
         }
+
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute]Guid id)
+        [Authorize]
+        public IActionResult GetById([FromRoute] Guid id)
         {
             var res = _repository.GetById(id);
             if (res == null) return NotFound();
             return Ok(res);
         }
+
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] MediaProjectCreateReq req) 
+        public IActionResult Create([FromBody] MediaProjectCreateReq req)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value; 
+            var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
             if (userIdClaim == null) return Unauthorized("User ID not found in claims.");
 
             var user = _userManager.Users
@@ -55,12 +59,10 @@ namespace TVStation.Controllers
 
             var mediaProject = new MediaProject
             {
-                Id = Guid.NewGuid(),
                 Sector = req.Sector,
                 Title = req.Title,
-                Content = req.Content,
-                IsPersonal = req.IsPersonal,
-                Airdate = req.Airdate,
+                Content = string.Empty,
+                IsPersonal = true,
                 MediaUrl = req.MediaUrl,
                 CreatedDate = DateTime.UtcNow,
                 Creator = user,
@@ -73,8 +75,31 @@ namespace TVStation.Controllers
             var result = _repository.Create(mediaProject);
             if (result == null) return StatusCode(500, "Failed to create MediaProject.");
 
-            return Ok("MediaProject created successfully.");
+            return StatusCode(200, "Created MediaProject successfully");
+        }
+        [HttpPut("{id}")]
+        [Authorize]
+        public IActionResult Update([FromRoute] Guid id,[FromBody] MediaProjectUpdateReq req)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var data = _repository.GetById(id);
+            if (data == null) return NotFound("User not found.");
+            data.Title = req.Title;
+            data.Content = req.Content;
+            data.IsPersonal = req.IsPersonal;
+            var result = _repository.Update(id, data);
+            if (result == null) return StatusCode(500, "Failed to update MediaProject.");
+
+            return Ok(result);
         }
 
+        [HttpDelete("{id}")]
+        [Authorize]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            var result = _repository.Delete(id);
+            if (result == null) return StatusCode(500, "Failed to delete MediaProject.");
+            return NoContent();
+        }
     }
 }

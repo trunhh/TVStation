@@ -2,8 +2,8 @@
 {
     public interface IProductionQuery : IPlanQuery
     {
-        DateTime StartDate { get; set; }
-        DateTime EndDate { get; set; }
-        Guid SiteMapId { get; set; }
+        DateTime? StartDate { get; set; }
+        DateTime? EndDate { get; set; }
+        Guid? SiteMapId { get; set; }
     }
 }

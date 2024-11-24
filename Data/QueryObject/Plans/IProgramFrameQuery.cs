@@ -2,6 +2,6 @@
 {
     public interface IProgramFrameQuery : IPlanQuery
     {
-        int Year { get; set; }
+        int? Year { get; set; }
     }
 }

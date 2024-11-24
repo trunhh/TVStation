@@ -51,22 +51,22 @@ namespace TVStation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ea8b7ccd-26b1-4321-8ca9-2c9d19496449",
-                            ConcurrencyStamp = "f5f69016-7d7e-4316-ad70-c258d17ea5ed",
+                            Id = "dd3a3608-f3be-4c0e-ad9c-71f3bd5c072d",
+                            ConcurrencyStamp = "3a162ec2-f7e4-4b9e-9312-06683ef474d0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "179392c3-1224-454c-87ed-ac42fe4ccfcc",
-                            ConcurrencyStamp = "2d0e0f75-2894-4b7a-b442-b7a31f639843",
+                            Id = "f664c215-c3a4-45fd-9267-1e29dab64920",
+                            ConcurrencyStamp = "b9338db7-49ea-4943-8961-55929caee52a",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "1b06abdb-bbc1-495b-bf0c-4f376bcee8d9",
-                            ConcurrencyStamp = "b5598a07-ce7e-4906-b1fc-3c2ec891a744",
+                            Id = "49a3412f-73d7-4ef4-819b-347e125db64e",
+                            ConcurrencyStamp = "ad435e56-a21d-4a12-b0f7-85ccc22c06a1",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -178,14 +178,11 @@ namespace TVStation.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TVStation.Data.Model.Plans.Productions.MediaProject", b =>
+            modelBuilder.Entity("TVStation.Data.Model.Plans.MediaProject", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Airdate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -482,6 +479,12 @@ namespace TVStation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -624,7 +627,7 @@ namespace TVStation.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TVStation.Data.Model.Plans.Productions.MediaProject", b =>
+            modelBuilder.Entity("TVStation.Data.Model.Plans.MediaProject", b =>
                 {
                     b.HasOne("TVStation.Data.Model.User", "Creator")
                         .WithMany()

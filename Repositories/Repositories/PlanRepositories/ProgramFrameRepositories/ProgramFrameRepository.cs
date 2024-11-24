@@ -12,7 +12,9 @@ namespace TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepos
 
         protected override IQueryable<T> GetQueriedData(Q query)
         {
-            return base.GetQueriedData(query).Where(s => s.Year == query.Year);
+            var queryable = base.GetQueriedData(query);
+            if (query.Year != null) queryable = queryable.Where(s => s.Year == query.Year);
+            return queryable;
         }
     }
 }

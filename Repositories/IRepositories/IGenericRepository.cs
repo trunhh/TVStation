@@ -4,8 +4,8 @@ namespace TVStation.Repositories.IRepositories
 {
     public class Paginated<T> where T : class
     {
-        public IEnumerable<T> Data { get; set; } = new List<T>();
-        public int PageCount { get; set; }
+        public IEnumerable<T> Content { get; set; } = new List<T>();
+        public int TotalPages { get; set; }
 
     }
     public interface IGenericRepository<T,Q> where T : class where Q : class

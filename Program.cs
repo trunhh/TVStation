@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using TVStation.Data.Model;
 using TVStation.Repositories.IRepositories;
+using TVStation.Repositories.Repositories.PlanRepositories;
 using TVStation.Repositories.Repositories.PlanRepositories.ProductionPlanRepositories;
 using TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepositories;
 using TVStation.Services;
@@ -13,7 +14,15 @@ using TVStation.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // React app URL
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
