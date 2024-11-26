@@ -1,16 +1,11 @@
 ﻿using TVStation.Data.Model;
+using TVStation.Data.Response;
 
 namespace TVStation.Repositories.IRepositories
 {
-    public class Paginated<T> where T : class
-    {
-        public IEnumerable<T> Content { get; set; } = new List<T>();
-        public int TotalPages { get; set; }
-
-    }
     public interface IGenericRepository<T,Q> where T : class where Q : class
     {
-        Paginated<T> GetAll(Q query);
+        IResponse GetAll(Q query);
         T? GetById(Guid id);
         T? Create(T entity);
         T? Update(Guid id, T entity);

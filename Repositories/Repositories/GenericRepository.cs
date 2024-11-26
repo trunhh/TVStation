@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using TVStation.Data.Constant;
 using TVStation.Data.Model;
 using TVStation.Data.QueryObject;
+using TVStation.Data.Response;
 using TVStation.Repositories.IRepositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -71,14 +73,14 @@ namespace TVStation.Repositories.Repositories
             return null;
         }
 
-        public virtual Paginated<T> GetAll(Q query)
+        public virtual IResponse GetAll(Q query)
         {
             var queryable = GetQueriedData(query);
             queryable = queryable.OrderByDescending(s => s.CreatedDate);
-            return new Paginated<T>
+            return new ListRes<T>
             {
-                Content = queryable.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList(),
-                TotalPages = (int)MathF.Ceiling(queryable.Count() / (float)query.PageSize)
+                Data = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
+                TotalCount = queryable.Count()
             };
         }
 

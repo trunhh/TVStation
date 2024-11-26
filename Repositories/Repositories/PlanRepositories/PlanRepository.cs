@@ -1,7 +1,9 @@
-﻿using TVStation.Data.Model;
+﻿using TVStation.Data.Constant;
+using TVStation.Data.Model;
 using TVStation.Data.Model.Plans;
 using TVStation.Data.QueryObject;
 using TVStation.Data.QueryObject.Plans;
+using TVStation.Data.Response;
 using TVStation.Repositories.IRepositories;
 
 namespace TVStation.Repositories.Repositories.PlanRepositories
@@ -10,6 +12,20 @@ namespace TVStation.Repositories.Repositories.PlanRepositories
         where T : class, IEntity, IPlan where Q : class, IPagingQuery, IPlanQuery
     {
         public PlanRepository(AppDbContext context) : base(context) { }
+
+        public override IResponse GetAll(Q query)
+        {
+            var queryable = GetQueriedData(query);
+            queryable = queryable.OrderByDescending(s => s.CreatedDate);
+            return new PlanListRes<T>
+            {
+                Data = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
+                TotalCount = queryable.Count(),
+                ApprovedCount = queryable.Where(p => p.Status == PlanStatus.Approved).Count(),
+                InProgressCount = queryable.Where(p => p.Status == PlanStatus.InProgress).Count(),
+                WaitingApprovalCount = queryable.Where(p => p.Status == PlanStatus.WaitingForApproval).Count()
+            };
+        }
 
         protected override IQueryable<T> GetQueriedData(Q query)
         {

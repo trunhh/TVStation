@@ -52,10 +52,9 @@ namespace TVStation.Controllers
                                                 || (u.Email != null && u.Email.Contains(query.Keyword)));
             }
 
-            return Ok(new Paginated<User>
+            return Ok(new ListRes<User>
             {
-                Content = queryable.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList(),
-                TotalPages = (int)MathF.Ceiling(queryable.Count() / (float)query.PageSize)
+                Data = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
             });
         }
 

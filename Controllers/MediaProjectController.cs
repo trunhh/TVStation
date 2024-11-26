@@ -9,6 +9,7 @@ using TVStation.Data.Model.Plans;
 using TVStation.Data.Model.Plans.Productions;
 using TVStation.Data.QueryObject.Plans.Productions;
 using TVStation.Data.Request;
+using TVStation.Data.Response;
 using TVStation.Repositories.IRepositories;
 using TVStation.Repositories.Repositories.PlanRepositories.ProductionPlanRepositories;
 
@@ -27,12 +28,20 @@ namespace TVStation.Controllers
         }
 
         [HttpGet]
-      //  [Authorize]
-        public IActionResult GetAll([FromBody] MediaProjectQuery query)
+        [Authorize]
+        public IActionResult GetAll([FromQuery] MediaProjectQuery query)
         {
-            var data = _repository.GetAll(query);
-            return Ok(data);
+            var res = _repository.GetAll(query) as PlanListRes<MediaProject>;
+            return Ok(new PlanListRes<MediaProjectListItemRes>
+            {
+                Data = res.Data.Select(m => new MediaProjectListItemRes(m)),
+                ApprovedCount = res.ApprovedCount,
+                InProgressCount = res.InProgressCount,
+                TotalCount = res.TotalCount,
+                WaitingApprovalCount = res.WaitingApprovalCount
+            });
         }
+
 
         [HttpGet("{id}")]
         [Authorize]

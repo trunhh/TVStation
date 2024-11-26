@@ -2,9 +2,9 @@
 {
     public interface IPlanQuery
     {
-        string Keyword { get; set; }
-        string Sector { get; set; }
-        string Status { get; set; }
-        bool IsPersonal { get; set; }
+        string? Keyword { get; set; }
+        string? Sector { get; set; }
+        string? Status { get; set; }
+        bool? IsPersonal { get; set; }
     }
 }
