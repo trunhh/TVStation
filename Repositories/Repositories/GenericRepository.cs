@@ -77,9 +77,9 @@ namespace TVStation.Repositories.Repositories
         {
             var queryable = GetQueriedData(query);
             queryable = queryable.OrderByDescending(s => s.CreatedDate);
-            return new ListRes<T>
+            return new ListResponse<T>
             {
-                Data = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
+                List = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
                 TotalCount = queryable.Count()
             };
         }

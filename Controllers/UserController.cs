@@ -52,9 +52,9 @@ namespace TVStation.Controllers
                                                 || (u.Email != null && u.Email.Contains(query.Keyword)));
             }
 
-            return Ok(new ListRes<User>
+            return Ok(new ListResponse<User>
             {
-                Data = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
+                List = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
             });
         }
 

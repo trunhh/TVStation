@@ -32,14 +32,7 @@ namespace TVStation.Controllers
         public IActionResult GetAll([FromQuery] MediaProjectQuery query)
         {
             var res = _repository.GetAll(query) as PlanListRes<MediaProject>;
-            return Ok(new PlanListRes<MediaProjectListItemRes>
-            {
-                Data = res.Data.Select(m => new MediaProjectListItemRes(m)),
-                ApprovedCount = res.ApprovedCount,
-                InProgressCount = res.InProgressCount,
-                TotalCount = res.TotalCount,
-                WaitingApprovalCount = res.WaitingApprovalCount
-            });
+            return Ok(res.Map<PlanListRes<MediaProject>, PlanListRes<MediaProjectListItemRes>>());
         }
 
 
@@ -49,7 +42,10 @@ namespace TVStation.Controllers
         {
             var res = _repository.GetById(id);
             if (res == null) return NotFound();
-            return Ok(res);
+            return Ok(new
+            {
+                Select = res
+            });
         }
 
         [HttpPost]
@@ -86,20 +82,20 @@ namespace TVStation.Controllers
 
             return StatusCode(200, "Created MediaProject successfully");
         }
-        [HttpPut("{id}")]
+        [HttpPut()]
         [Authorize]
-        public IActionResult Update([FromRoute] Guid id,[FromBody] MediaProjectUpdateReq req)
+        public IActionResult Update([FromBody] MediaProjectUpdateReq req)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var data = _repository.GetById(id);
+            var data = _repository.GetById(req.Id);
             if (data == null) return NotFound("User not found.");
             data.Title = req.Title;
             data.Content = req.Content;
             data.IsPersonal = req.IsPersonal;
-            var result = _repository.Update(id, data);
+            var result = _repository.Update(req.Id, data);
             if (result == null) return StatusCode(500, "Failed to update MediaProject.");
 
-            return Ok(result);
+            return StatusCode(200, "Updated MediaProject successfully");
         }
 
         [HttpDelete("{id}")]

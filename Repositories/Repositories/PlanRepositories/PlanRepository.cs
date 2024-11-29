@@ -19,7 +19,7 @@ namespace TVStation.Repositories.Repositories.PlanRepositories
             queryable = queryable.OrderByDescending(s => s.CreatedDate);
             return new PlanListRes<T>
             {
-                Data = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
+                List = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
                 TotalCount = queryable.Count(),
                 ApprovedCount = queryable.Where(p => p.Status == PlanStatus.Approved).Count(),
                 InProgressCount = queryable.Where(p => p.Status == PlanStatus.InProgress).Count(),
