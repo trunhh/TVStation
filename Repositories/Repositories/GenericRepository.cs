@@ -1,16 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using TVStation.Data.Constant;
 using TVStation.Data.Model;
-using TVStation.Data.QueryObject;
-using TVStation.Data.Response;
 using TVStation.Repositories.IRepositories;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TVStation.Repositories.Repositories
 {
-    public class GenericRepository<T,Q> : IGenericRepository<T,Q> 
-        where T : class, IEntity where Q : class, IPagingQuery
+    public class GenericRepository<T> : IGenericRepository<T> 
+        where T : class, IEntity
     {
         protected readonly AppDbContext _context;
 
@@ -73,18 +68,10 @@ namespace TVStation.Repositories.Repositories
             return null;
         }
 
-        public virtual IResponse GetAll(Q query)
+        public virtual IEnumerable<T> GetAll()
         {
-            var queryable = GetQueriedData(query);
-            queryable = queryable.OrderByDescending(s => s.CreatedDate);
-            return new ListResponse<T>
-            {
-                List = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
-                TotalCount = queryable.Count()
-            };
+            return _context.Set<T>().Where(s => s.IsDeleted == false);
         }
-
-        protected virtual IQueryable<T> GetQueriedData(Q query) => _context.Set<T>().Where(s => s.IsDeleted == false);
 
         public virtual T? GetById(Guid id)
         {

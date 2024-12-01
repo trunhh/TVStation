@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TVStation.Data.Constant;
 using TVStation.Data.Model;
 using TVStation.Data.QueryObject;
-using TVStation.Data.Request;
-using TVStation.Data.Response;
-using TVStation.Repositories.IRepositories;
+using TVStation.Data.DTO;
 
 namespace TVStation.Controllers
 {
@@ -26,11 +24,12 @@ namespace TVStation.Controllers
         {
             var user = _userManager.Users.FirstOrDefault(u => u.UserName == username);
             if (user == null) return Unauthorized("Invalid username!");
-            return Ok(new UserRes
+            return Ok(new UserDTO
             {
-                UserName = user.UserName,
                 Email = user.Email,
                 Name = user.Name,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
             });
         }
 
@@ -52,15 +51,12 @@ namespace TVStation.Controllers
                                                 || (u.Email != null && u.Email.Contains(query.Keyword)));
             }
 
-            return Ok(new ListResponse<User>
-            {
-                List = queryable.Skip((query.PageIndex - 1) * Config.PageSize).Take(Config.PageSize).ToList(),
-            });
+            return Ok(queryable);
         }
 
         [HttpPut]
         [Authorize]
-        public IActionResult Update([FromBody]UserUpdateReq req)
+        public IActionResult Update([FromBody]UserDTO req)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;

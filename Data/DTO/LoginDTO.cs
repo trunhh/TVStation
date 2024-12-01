@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TVStation.Data.Request
+namespace TVStation.Data.DTO
 {
-    public class LoginReq
+    public class LoginDTO
     {
         [Required]
         public string Username { get; set; }

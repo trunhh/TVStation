@@ -4,7 +4,7 @@ using TVStation.Data.QueryObject.Plans.ProgramFrames;
 namespace TVStation.Repositories.IRepositories
 {
     public interface IProgramFrameBroadcastRepository 
-        : IGenericRepository<ProgramFrameBroadcast, ProgramFrameBroadcastQuery>
+        : IPlanRepository<ProgramFrameBroadcast, ProgramFrameBroadcastQuery>
     {
     }
 }

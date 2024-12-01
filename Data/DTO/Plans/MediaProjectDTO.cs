@@ -1,10 +1,8 @@
-﻿using TVStation.Data.Model;
-
-namespace TVStation.Data.Request
+﻿
+namespace TVStation.Data.DTO.Plans
 {
-    public class MediaProjectUpdateReq
+    public class MediaProjectDTO
     {
-        public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public bool IsPersonal { get; set; }

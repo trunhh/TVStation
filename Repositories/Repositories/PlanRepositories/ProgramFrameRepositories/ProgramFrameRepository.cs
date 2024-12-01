@@ -5,7 +5,7 @@ using TVStation.Data.QueryObject.Plans;
 
 namespace TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepositories
 {
-    public abstract class ProgramFrameRepository<T,Q> : GenericRepository<T,Q>
+    public abstract class ProgramFrameRepository<T,Q> : PlanRepository<T,Q>
         where T : class, IEntity, IProgramFrame where Q : class, IPagingQuery, IProgramFrameQuery
     {
         public ProgramFrameRepository(AppDbContext dbContext) : base(dbContext) { }

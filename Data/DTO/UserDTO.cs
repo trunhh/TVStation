@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TVStation.Data.Request
+namespace TVStation.Data.DTO
 {
-    public class UserUpdateReq
+    public class UserDTO
     {
         [EmailAddress]
         public string? Email { get; set; }

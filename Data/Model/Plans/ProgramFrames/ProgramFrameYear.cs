@@ -1,11 +1,15 @@
-﻿namespace TVStation.Data.Model.Plans.ProgramFrames
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace TVStation.Data.Model.Plans.ProgramFrames
 {
     public class ProgramFrameYear : IProgramFrame, IEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public Guid Id { get; set; }
+        public DateTime CreatedDate { get; set; }
         public bool IsDeleted { get; set; } = false;
         public User? Creator { get; set; }
+        [NotMapped]
+        public string? CreatorName => Creator?.Name;
         public string Sector { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;

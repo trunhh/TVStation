@@ -2,16 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
 using TVStation.Data.Constant;
+using TVStation.Data.DTO.Plans;
 using TVStation.Data.Model;
 using TVStation.Data.Model.Plans;
-using TVStation.Data.Model.Plans.Productions;
 using TVStation.Data.QueryObject.Plans.Productions;
-using TVStation.Data.Request;
-using TVStation.Data.Response;
 using TVStation.Repositories.IRepositories;
-using TVStation.Repositories.Repositories.PlanRepositories.ProductionPlanRepositories;
 
 namespace TVStation.Controllers
 {
@@ -29,12 +25,11 @@ namespace TVStation.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetAll([FromQuery] MediaProjectQuery query)
+        public IActionResult GetAllPaging([FromQuery] MediaProjectQuery query)
         {
-            var res = _repository.GetAll(query) as PlanListRes<MediaProject>;
-            return Ok(res.Map<PlanListRes<MediaProject>, PlanListRes<MediaProjectListItemRes>>());
+            var res = _repository.GetAllPaging(query);
+            return Ok(res.Map<PlanListDTO<MediaProject>, PlanListDTO<MediaProjectItemDTO>>());
         }
-
 
         [HttpGet("{id}")]
         [Authorize]
@@ -50,7 +45,7 @@ namespace TVStation.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] MediaProjectCreateReq req)
+        public IActionResult Create([FromBody] MediaProjectCreateDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
@@ -64,11 +59,11 @@ namespace TVStation.Controllers
 
             var mediaProject = new MediaProject
             {
-                Sector = req.Sector,
-                Title = req.Title,
+                Sector = dto.Sector,
+                Title = dto.Title,
                 Content = string.Empty,
                 IsPersonal = true,
-                MediaUrl = req.MediaUrl,
+                MediaUrl = dto.MediaUrl,
                 CreatedDate = DateTime.UtcNow,
                 Creator = user,
                 SiteMap = user.SiteMap,
@@ -78,24 +73,25 @@ namespace TVStation.Controllers
 
 
             var result = _repository.Create(mediaProject);
-            if (result == null) return StatusCode(500, "Failed to create MediaProject.");
+            if (result == null) return StatusCode(500, "Failed to create");
 
-            return StatusCode(200, "Created MediaProject successfully");
+            return Ok(result);
         }
-        [HttpPut()]
+
+        [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Update([FromBody] MediaProjectUpdateReq req)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] MediaProjectDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var data = _repository.GetById(req.Id);
-            if (data == null) return NotFound("User not found.");
-            data.Title = req.Title;
-            data.Content = req.Content;
-            data.IsPersonal = req.IsPersonal;
-            var result = _repository.Update(req.Id, data);
-            if (result == null) return StatusCode(500, "Failed to update MediaProject.");
+            var data = _repository.GetById(id);
+            if (data == null) return NotFound();
+            data.Title = dto.Title;
+            data.Content = dto.Content;
+            data.IsPersonal = dto.IsPersonal;
+            var result = _repository.Update(id, data);
+            if (result == null) return StatusCode(500, "Failed to update");
 
-            return StatusCode(200, "Updated MediaProject successfully");
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
@@ -103,8 +99,26 @@ namespace TVStation.Controllers
         public IActionResult Delete([FromRoute] Guid id)
         {
             var result = _repository.Delete(id);
-            if (result == null) return StatusCode(500, "Failed to delete MediaProject.");
+            if (result == null) return StatusCode(500, "Failed to delete");
             return NoContent();
+        }
+
+        [HttpPut("Status/{id}")]
+        [Authorize]
+        public IActionResult UpdateStatus([FromRoute] Guid id, [FromBody] string status)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = _repository.SetStatus(id, status);
+            if (result == null) return BadRequest(status);
+            return Ok(result);
+        }
+
+        [HttpGet("Status")]
+        [Authorize]
+        public IActionResult GetByStatus([FromBody] string status)
+        {
+            var res = _repository.GetByStatus(status);
+            return Ok(res.Select(i => i.Map<MediaProject, MediaProjectItemDTO>());
         }
     }
 }

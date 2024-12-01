@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using TVStation.Data.Model;
-using TVStation.Data.Request;
-using TVStation.Data.Response;
+using TVStation.Data.DTO;
 using TVStation.Services;
 
 namespace TVStation.Controllers
@@ -23,7 +21,7 @@ namespace TVStation.Controllers
         }
 
         [HttpPost("SignUp")]
-        public IActionResult Register([FromBody] RegisterReq req)
+        public IActionResult Register([FromBody] RegisterDTO dto)
         {
             try
             {
@@ -31,18 +29,18 @@ namespace TVStation.Controllers
 
                 var user = new User
                 {
-                    UserName = req.Username,
-                    Email = req.Email,
-                    Name = req.Name
+                    UserName = dto.Username,
+                    Email = dto.Email,
+                    Name = dto.Name
                 };
 
-                var createUser = _userManager.CreateAsync(user, req.Password).GetAwaiter().GetResult();
+                var createUser = _userManager.CreateAsync(user, dto.Password).GetAwaiter().GetResult();
 
                 if (createUser.Succeeded)
                 {
                     var roleResult = _userManager.AddToRoleAsync(user, "Employee").GetAwaiter().GetResult();
                     if (roleResult.Succeeded)
-                        return Ok(new NewUserRes
+                        return Ok(new AuthDTO
                         {
                             UserName = user.UserName,
                             Email = user.Email,
@@ -62,14 +60,14 @@ namespace TVStation.Controllers
         }
 
         [HttpPost("SignIn")]
-        public IActionResult Login(LoginReq req)
+        public IActionResult Login(LoginDTO req)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var user = _userManager.Users.FirstOrDefault(u => u.UserName == req.Username);
             if (user == null) return Unauthorized("Invalid username!");
             var result = _signInManager.CheckPasswordSignInAsync(user, req.Password, false).GetAwaiter().GetResult();
             if (!result.Succeeded) return Unauthorized("Wrong password!");
-            return Ok(new NewUserRes
+            return Ok(new AuthDTO
             {
                 UserName = user.UserName,
                 Email = user.Email,

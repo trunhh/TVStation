@@ -1,8 +1,8 @@
-﻿using TVStation.Data.Model;
+﻿
 
-namespace TVStation.Data.Request
+namespace TVStation.Data.DTO.Plans
 {
-    public class MediaProjectCreateReq
+    public class MediaProjectCreateDTO
     {
         public string Sector { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;

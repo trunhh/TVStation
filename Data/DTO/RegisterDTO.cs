@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TVStation.Data.Request
+namespace TVStation.Data.DTO
 {
-    public class RegisterReq
+    public class RegisterDTO
     {
         [Required]
         public string? Username { get; set; }
@@ -11,7 +11,6 @@ namespace TVStation.Data.Request
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
-
         [Required]
         public string Name { get; set; } = string.Empty;
     }

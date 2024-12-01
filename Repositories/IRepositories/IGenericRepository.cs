@@ -1,11 +1,8 @@
-﻿using TVStation.Data.Model;
-using TVStation.Data.Response;
-
-namespace TVStation.Repositories.IRepositories
+﻿namespace TVStation.Repositories.IRepositories
 {
-    public interface IGenericRepository<T,Q> where T : class where Q : class
+    public interface IGenericRepository<T>
     {
-        IResponse GetAll(Q query);
+        IEnumerable<T> GetAll();
         T? GetById(Guid id);
         T? Create(T entity);
         T? Update(Guid id, T entity);

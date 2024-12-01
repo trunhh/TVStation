@@ -4,7 +4,7 @@ using TVStation.Data.QueryObject.Plans.Productions;
 namespace TVStation.Repositories.IRepositories
 {
     public interface IProductionRegistrationRepository 
-        : IGenericRepository<ProductionRegistration, ProductionRegistrationQuery>
+        : IPlanRepository<ProductionRegistration, ProductionRegistrationQuery>
     {
     }
 }
