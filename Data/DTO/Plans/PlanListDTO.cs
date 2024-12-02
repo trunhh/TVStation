@@ -1,4 +1,4 @@
-﻿namespace TVStation.Data.DTO
+﻿namespace TVStation.Data.DTO.Plans
 {
     public class PlanListDTO<T>
     {

@@ -8,6 +8,7 @@ using TVStation.Data.QueryObject.Plans.Productions;
 using TVStation.Data.DTO.Plans;
 using TVStation.Repositories.IRepositories;
 using TVStation.Data.Model.Plans.Productions;
+using Microsoft.EntityFrameworkCore;
 
 namespace TVStation.Controllers
 {
@@ -23,7 +24,7 @@ namespace TVStation.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Authorize]
         public IActionResult GetAllPaging([FromQuery] ProductionRegistrationQuery query)
         {
@@ -101,6 +102,6 @@ namespace TVStation.Controllers
             var result = _repository.Delete(id);
             if (result == null) return StatusCode(500, "Failed to delete");
             return NoContent();
-        }
+        }*/
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TVStation.Data.Constant;
+using TVStation.Data.DTO;
 using TVStation.Data.DTO.Plans;
 using TVStation.Data.Model;
 using TVStation.Data.Model.Plans;
@@ -37,10 +38,7 @@ namespace TVStation.Controllers
         {
             var res = _repository.GetById(id);
             if (res == null) return NotFound();
-            return Ok(new
-            {
-                Select = res
-            });
+            return Ok(res.Map<MediaProject,MediaProjectDTO>());
         }
 
         [HttpPost]
@@ -75,7 +73,7 @@ namespace TVStation.Controllers
             var result = _repository.Create(mediaProject);
             if (result == null) return StatusCode(500, "Failed to create");
 
-            return Ok(result);
+            return Ok(result.Map<MediaProject, MediaProjectDTO>());
         }
 
         [HttpPut("{id}")]
@@ -91,7 +89,7 @@ namespace TVStation.Controllers
             var result = _repository.Update(id, data);
             if (result == null) return StatusCode(500, "Failed to update");
 
-            return Ok(result);
+            return Ok(result.Map<MediaProject, MediaProjectDTO>());
         }
 
         [HttpDelete("{id}")]
@@ -110,7 +108,7 @@ namespace TVStation.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = _repository.SetStatus(id, status);
             if (result == null) return BadRequest(status);
-            return Ok(result);
+            return Ok(result.Map<MediaProject, MediaProjectDTO>());
         }
 
         [HttpGet("Status")]
@@ -118,7 +116,7 @@ namespace TVStation.Controllers
         public IActionResult GetByStatus([FromBody] string status)
         {
             var res = _repository.GetByStatus(status);
-            return Ok(res.Select(i => i.Map<MediaProject, MediaProjectItemDTO>());
+            return Ok(res.Select(i => i.Map<MediaProject, MediaProjectItemDTO>()));
         }
     }
 }

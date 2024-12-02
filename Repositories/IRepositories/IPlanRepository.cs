@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using TVStation.Data.DTO.Plans;
+﻿using TVStation.Data.DTO.Plans;
 
 namespace TVStation.Repositories.IRepositories
 {

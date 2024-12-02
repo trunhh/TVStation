@@ -43,7 +43,6 @@ namespace TVStation.Controllers
                         return Ok(new AuthDTO
                         {
                             UserName = user.UserName,
-                            Email = user.Email,
                             Token = _tokenService.CreateToken(user)
                         });
                     else return StatusCode(500, roleResult.Errors);
@@ -70,7 +69,6 @@ namespace TVStation.Controllers
             return Ok(new AuthDTO
             {
                 UserName = user.UserName,
-                Email = user.Email,
                 Token = _tokenService.CreateToken(user)
             });
         }

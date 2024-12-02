@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using TVStation.Data.Model;
 using TVStation.Repositories.IRepositories;
+using TVStation.Repositories.Repositories;
 using TVStation.Repositories.Repositories.PlanRepositories;
 using TVStation.Repositories.Repositories.PlanRepositories.ProductionPlanRepositories;
 using TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepositories;
@@ -98,6 +99,8 @@ builder.Services.AddScoped<IScriptProgramRepository, ScriptProgramRepository>();
 builder.Services.AddScoped<IProgramFrameWeekRepository, ProgramFrameWeekRepository>();
 builder.Services.AddScoped<IProgramFrameBroadcastRepository, ProgramFrameBroadcastRepository>();
 builder.Services.AddScoped<IProgramFrameYearRepository, ProgramFrameYearRepository>();
+builder.Services.AddScoped<ISiteMapRepository, SiteMapRepository>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();

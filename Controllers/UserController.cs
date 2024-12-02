@@ -6,6 +6,7 @@ using TVStation.Data.Constant;
 using TVStation.Data.Model;
 using TVStation.Data.QueryObject;
 using TVStation.Data.DTO;
+using TVStation.Services;
 
 namespace TVStation.Controllers
 {
@@ -14,9 +15,11 @@ namespace TVStation.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        public UserController(UserManager<User> userManager)
+        private readonly IFileUploadService _uploadService;
+        public UserController(UserManager<User> userManager, IFileUploadService uploadService)
         {
             _userManager = userManager;
+            _uploadService = uploadService;
         }
         [HttpGet("{username}")]
         [Authorize]
@@ -24,18 +27,12 @@ namespace TVStation.Controllers
         {
             var user = _userManager.Users.FirstOrDefault(u => u.UserName == username);
             if (user == null) return Unauthorized("Invalid username!");
-            return Ok(new UserDTO
-            {
-                Email = user.Email,
-                Name = user.Name,
-                PhoneNumber = user.PhoneNumber,
-                Address = user.Address,
-            });
+            return Ok(user.Map<User, UserDTO>());
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult Get([FromQuery]UserQuery query)
+        public IActionResult GetAll([FromQuery]UserQuery query)
         {
             var queryable = _userManager.Users;
             if (query.SiteMapId != null && query.SiteMapId != Guid.Empty)
@@ -51,12 +48,12 @@ namespace TVStation.Controllers
                                                 || (u.Email != null && u.Email.Contains(query.Keyword)));
             }
 
-            return Ok(queryable);
+            return Ok(queryable.Select(u => u.Map<User, UserDTO>()));
         }
 
         [HttpPut]
         [Authorize]
-        public IActionResult Update([FromBody]UserDTO req)
+        public IActionResult Update([FromBody]UserUpdateDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
@@ -66,13 +63,14 @@ namespace TVStation.Controllers
                 .FirstOrDefaultAsync(u => u.Id == userIdClaim)
                 .GetAwaiter().GetResult();
             if (user == null) return NotFound("User not found.");
-            if (!string.IsNullOrEmpty(req.Address)) user.Address = req.Address;
-            if (!string.IsNullOrEmpty(req.Email)) user.Email = req.Email;
-            if (!string.IsNullOrEmpty(req.Name)) user.Name = req.Name;
-            if (!string.IsNullOrEmpty(req.PhoneNumber)) user.PhoneNumber = req.PhoneNumber;
+            if (!string.IsNullOrEmpty(dto.Address)) user.Address = dto.Address;
+            if (!string.IsNullOrEmpty(dto.Email)) user.Email = dto.Email;
+            if (!string.IsNullOrEmpty(dto.Name)) user.Name = dto.Name;
+            if (!string.IsNullOrEmpty(dto.PhoneNumber)) user.PhoneNumber = dto.PhoneNumber;
+            if (dto.Avatar != null &&  dto.Avatar.Length > 0) user.AvatarUrl = _uploadService.UploadFile(dto.Avatar);
             var update = _userManager.UpdateAsync(user).GetAwaiter().GetResult();
             if (!update.Succeeded) return StatusCode(500, "Failed to update user info.");
-            return Ok(user);
+            return Ok(user.Map<User, UserDTO>());
         }
     }
 }

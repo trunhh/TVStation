@@ -20,7 +20,7 @@ namespace TVStation.Controllers
         [Authorize]
         public IActionResult GetAll()
         {
-            return Ok(_repository.GetAll());
+            return Ok(_repository.GetAll().Select(sm => sm.Map<SiteMap, SiteMapDTO>()));
         }
 
 
@@ -30,7 +30,7 @@ namespace TVStation.Controllers
         {
             var res = _repository.GetById(id);
             if (res == null) return NotFound();
-            return Ok(res);
+            return Ok(res.Map<SiteMap, SiteMapDTO>());
         }
 
         [HttpPost]
@@ -48,7 +48,7 @@ namespace TVStation.Controllers
             var result = _repository.Create(siteMap);
             if (result == null) return StatusCode(500);
 
-            return Ok(result);
+            return Ok(result.Map<SiteMap, SiteMapDTO>());
         }
 
         [HttpPut("{id}")]
@@ -62,7 +62,7 @@ namespace TVStation.Controllers
             var result = _repository.Update(id, data);
             if (result == null) return StatusCode(500);
 
-            return Ok(result);
+            return Ok(result.Map<SiteMap, SiteMapDTO>());
         }
 
         [HttpDelete("{id}")]
