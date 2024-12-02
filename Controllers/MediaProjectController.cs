@@ -55,22 +55,14 @@ namespace TVStation.Controllers
                 .GetAwaiter().GetResult();
             if (user == null) return NotFound("User not found.");
 
-            var mediaProject = new MediaProject
-            {
-                Sector = dto.Sector,
-                Title = dto.Title,
-                Content = string.Empty,
-                IsPersonal = true,
-                MediaUrl = dto.MediaUrl,
-                CreatedDate = DateTime.UtcNow,
-                Creator = user,
-                SiteMap = user.SiteMap,
-                Status = PlanStatus.WaitingForApproval,
-                IsDeleted = false,
-            };
+            var data = dto.Map<MediaProjectCreateDTO, MediaProject>();
+            data.CreatedDate = DateTime.Now;
+            data.Content = string.Empty;
+            data.IsPersonal = true;
+            data.IsDeleted = false;
+            data.Status = PlanStatus.InProgress;
 
-
-            var result = _repository.Create(mediaProject);
+            var result = _repository.Create(data);
             if (result == null) return StatusCode(500, "Failed to create");
 
             return Ok(result.Map<MediaProject, MediaProjectDTO>());

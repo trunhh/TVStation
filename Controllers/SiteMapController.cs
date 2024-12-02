@@ -35,7 +35,7 @@ namespace TVStation.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] SiteMapDTO dto)
+        public IActionResult Create([FromBody] SiteMapCreateDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

@@ -24,14 +24,13 @@ namespace TVStation.Controllers
             _userManager = userManager;
         }
 
-        /*[HttpGet]
+        [HttpGet]
         [Authorize]
         public IActionResult GetAllPaging([FromQuery] ProductionRegistrationQuery query)
         {
             var res = _repository.GetAllPaging(query);
-            return Ok(res.Map<PlanListDTO<ProductionRegistration>, PlanListDTO<MediaProjectItemDTO>>());
+            return Ok(res.Map<PlanListDTO<ProductionRegistration>, PlanListDTO<PreProductionItemDTO>>());
         }
-
 
         [HttpGet("{id}")]
         [Authorize]
@@ -39,15 +38,12 @@ namespace TVStation.Controllers
         {
             var res = _repository.GetById(id);
             if (res == null) return NotFound();
-            return Ok(new
-            {
-                Select = res
-            });
+            return Ok(res.Map<ProductionRegistration, ProductionRegistrationDTO>());
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] MediaProjectCreateDTO dto)
+        public IActionResult Create([FromBody] ProductionRegistrationDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
@@ -59,29 +55,22 @@ namespace TVStation.Controllers
                 .GetAwaiter().GetResult();
             if (user == null) return NotFound("User not found.");
 
-            var mediaProject = new MediaProject
-            {
-                Sector = dto.Sector,
-                Title = dto.Title,
-                Content = string.Empty,
-                IsPersonal = true,
-                MediaUrl = dto.MediaUrl,
-                CreatedDate = DateTime.UtcNow,
-                Creator = user,
-                SiteMap = user.SiteMap,
-                Status = PlanStatus.WaitingForApproval,
-                IsDeleted = false,
-            };
+            var data = dto.Map<ProductionRegistrationDTO, ProductionRegistration>();
+            data.CreatedDate = DateTime.Now;
+            data.Content = string.Empty;
+            data.IsPersonal = true;
+            data.IsDeleted = false;
+            data.Status = PlanStatus.InProgress;
 
-
-            var result = _repository.Create(mediaProject);
+            var result = _repository.Create(data);
             if (result == null) return StatusCode(500, "Failed to create");
 
-            return Ok(result);
+            return Ok(result.Map<ProductionRegistration, ProductionRegistrationDTO>());
         }
+
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] MediaProjectDTO dto)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] ProductionRegistrationDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var data = _repository.GetById(id);
@@ -92,7 +81,7 @@ namespace TVStation.Controllers
             var result = _repository.Update(id, data);
             if (result == null) return StatusCode(500, "Failed to update");
 
-            return Ok(result);
+            return Ok(result.Map<ProductionRegistration, ProductionRegistrationDTO>());
         }
 
         [HttpDelete("{id}")]
@@ -102,6 +91,24 @@ namespace TVStation.Controllers
             var result = _repository.Delete(id);
             if (result == null) return StatusCode(500, "Failed to delete");
             return NoContent();
-        }*/
+        }
+
+        [HttpPut("Status/{id}")]
+        [Authorize]
+        public IActionResult UpdateStatus([FromRoute] Guid id, [FromBody] string status)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = _repository.SetStatus(id, status);
+            if (result == null) return BadRequest(status);
+            return Ok(result.Map<ProductionRegistration, ProductionRegistrationDTO>());
+        }
+
+        [HttpGet("Status")]
+        [Authorize]
+        public IActionResult GetByStatus([FromBody] string status)
+        {
+            var res = _repository.GetByStatus(status);
+            return Ok(res.Select(i => i.Map<ProductionRegistration, ProductionRegistrationDTO>()));
+        }
     }
 }

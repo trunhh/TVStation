@@ -2,9 +2,9 @@
 
 namespace TVStation.Data.DTO
 {
-    public class SiteMapDTO
+    public class SiteMapCreateDTO
     {
-        public Guid Id { get; set; }
+        [Required]
         public string Name { get; set; } = string.Empty;
     }
 }
