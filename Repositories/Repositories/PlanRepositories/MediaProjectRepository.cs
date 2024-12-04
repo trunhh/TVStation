@@ -32,7 +32,6 @@ namespace TVStation.Repositories.Repositories.PlanRepositories
                     .AsQueryable()
                     .Where(s => s.SiteMap != null && s.SiteMap.Id == query.SiteMapId);
             }
-            queryable = queryable.Include(m => m.Creator).AsQueryable();
             return queryable;
         }
     }

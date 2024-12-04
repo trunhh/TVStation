@@ -1,4 +1,5 @@
-﻿using TVStation.Data.Constant;
+﻿using Microsoft.EntityFrameworkCore;
+using TVStation.Data.Constant;
 using TVStation.Data.DTO.Plans;
 using TVStation.Data.Model;
 using TVStation.Data.Model.Plans;
@@ -80,6 +81,7 @@ namespace TVStation.Repositories.Repositories.PlanRepositories
             {
                 queryable = queryable.Where(s => s.IsPersonal == true);
             }
+            queryable = queryable.Include(m => m.Creator).AsQueryable();
             return queryable;
         }
 
