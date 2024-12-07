@@ -51,7 +51,7 @@ namespace TVStation.Repositories.Repositories.PlanRepositories
             {
                 List = queryable.Skip((query.PageIndex - 1) * PageSize).Take(PageSize).ToList(),
                 TotalCount = queryable.Count(),
-                PageCount = queryable.Count()/PageSize,
+                PageIndex = query.PageIndex,
                 ApprovedCount = queryable.Where(p => p.Status == PlanStatus.Approved).Count(),
                 InProgressCount = queryable.Where(p => p.Status == PlanStatus.InProgress).Count(),
                 WaitingApprovalCount = queryable.Where(p => p.Status == PlanStatus.WaitingForApproval).Count()

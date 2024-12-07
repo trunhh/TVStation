@@ -56,6 +56,8 @@ namespace TVStation.Controllers
             if (user == null) return NotFound("User not found.");
 
             var data = dto.Map<ProductionRegistrationDTO, ProductionRegistration>();
+            data.Creator = user;
+            data.SiteMap = user.SiteMap;
             data.CreatedDate = DateTime.Now;
             data.Content = string.Empty;
             data.IsPersonal = true;
@@ -77,6 +79,7 @@ namespace TVStation.Controllers
             if (data == null) return NotFound();
             data.Title = dto.Title;
             data.Content = dto.Content;
+            data.Airdate = dto.Airdate;
             data.IsPersonal = dto.IsPersonal;
             var result = _repository.Update(id, data);
             if (result == null) return StatusCode(500, "Failed to update");

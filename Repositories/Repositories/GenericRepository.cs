@@ -90,7 +90,7 @@ namespace TVStation.Repositories.Repositories
                 {
                     _context.Set<T>().Update(entity).Property(x => x.Id).IsModified = false;
                     _context.SaveChanges();
-                    return tEntity;
+                    return entity;
                 }
                 catch (Exception)
                 {
