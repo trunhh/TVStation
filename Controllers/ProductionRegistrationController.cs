@@ -59,8 +59,6 @@ namespace TVStation.Controllers
             data.Creator = user;
             data.SiteMap = user.SiteMap;
             data.CreatedDate = DateTime.Now;
-            data.Content = string.Empty;
-            data.IsPersonal = true;
             data.IsDeleted = false;
             data.Status = PlanStatus.InProgress;
 
