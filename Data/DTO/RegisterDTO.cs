@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TVStation.Data.Constant;
+using TVStation.Data.Model;
 
 namespace TVStation.Data.DTO
 {
@@ -9,9 +11,8 @@ namespace TVStation.Data.DTO
         [Required]
         public string Password { get; set; } = string.Empty;
         [Required]
-        [EmailAddress]
-        public string? Email { get; set; }
+        public Guid SiteMapId { get; set; }
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Role { get; set; } = UserRole.Employee;
     }
 }

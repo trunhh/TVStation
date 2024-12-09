@@ -20,55 +20,20 @@ namespace TVStation.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost("SignUp")]
-        public IActionResult Register([FromBody] RegisterDTO dto)
-        {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-
-                var user = new User
-                {
-                    UserName = dto.Username,
-                    Email = dto.Email,
-                    Name = dto.Name
-                };
-
-                var createUser = _userManager.CreateAsync(user, dto.Password).GetAwaiter().GetResult();
-
-                if (createUser.Succeeded)
-                {
-                    var roleResult = _userManager.AddToRoleAsync(user, "Employee").GetAwaiter().GetResult();
-                    if (roleResult.Succeeded)
-                        return Ok(new AuthDTO
-                        {
-                            UserName = user.UserName,
-                            Token = _tokenService.CreateToken(user)
-                        });
-                    else return StatusCode(500, roleResult.Errors);
-
-                }
-                else return StatusCode(500, createUser.Errors);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-
-        }
-
         [HttpPost("SignIn")]
         public IActionResult Login(LoginDTO req)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var user = _userManager.Users.FirstOrDefault(u => u.UserName == req.Username);
-            if (user == null) return Unauthorized("Invalid username!");
+            if (user == null) return Unauthorized("Wrong username or password!");
             var result = _signInManager.CheckPasswordSignInAsync(user, req.Password, false).GetAwaiter().GetResult();
-            if (!result.Succeeded) return Unauthorized("Wrong password!");
+            if (!result.Succeeded) return Unauthorized("Wrong username or password!");
             return Ok(new AuthDTO
             {
                 UserName = user.UserName,
+                AvatarUrl = user.AvatarUrl,
+                Name = user.Name,
+                Email = user.Email,
                 Token = _tokenService.CreateToken(user)
             });
         }

@@ -15,57 +15,27 @@ namespace TVStation.Repositories.Repositories
         }
         public virtual T? Create(T entity)
         {
-            try
-            {
-                _context.Set<T>().Add(entity);
-                _context.SaveChanges();
-                return entity;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            _context.Set<T>().Add(entity);
+            _context.SaveChanges();
+            return entity;
         }
 
         public virtual T? Delete(Guid id)
         {
-            var tEntity = _context.Set<T>()
-              .AsNoTracking()
-              .FirstOrDefault(e => e.Id.Equals(id));
-            if (tEntity != null)
-            {
-                tEntity.IsDeleted = true;
-                try
-                {
-                    _context.Set<T>().Update(tEntity).Property(x => x.Id).IsModified = false;
-                    _context.SaveChanges();
-                    return tEntity;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-            return null;
+            var entity = _context.Set<T>().FirstOrDefault(e => e.Id.Equals(id));
+            if (entity == null) throw new KeyNotFoundException("Data not found");
+            entity.IsDeleted = true;
+            _context.SaveChanges();
+            return entity;
         }
 
         public virtual T? DeletePermanent(Guid id)
         {
             var entity = _context.Set<T>().FirstOrDefault(e => e.Id.Equals(id));
-            if (entity != null)
-            {
-                try
-                {
-                    _context.Set<T>().Remove(entity);
-                    _context.SaveChanges();
-                    return entity;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-            return null;
+            if (entity == null) throw new KeyNotFoundException("Data not found");
+            _context.Set<T>().Remove(entity);
+            _context.SaveChanges();
+            return entity;
         }
 
         public virtual IEnumerable<T> GetAll()
@@ -75,30 +45,18 @@ namespace TVStation.Repositories.Repositories
 
         public virtual T? GetById(Guid id)
         {
-            return _context.Set<T>()
-                .AsNoTracking().Where(s => s.Id.Equals(id) && s.IsDeleted == false).FirstOrDefault();
+            return _context.Set<T>().Where(s => s.Id.Equals(id) && s.IsDeleted == false).FirstOrDefault();
         }
 
-        public virtual T? Update(Guid id, T entity)
+        public virtual T? Update(Guid id, object entity)
         {
-            var tEntity = _context.Set<T>()
-                .AsNoTracking()
-                .FirstOrDefault(e => e.Id.Equals(id));
-            if (tEntity != null)
-            {
-                try
-                {
-                    _context.Set<T>().Update(entity).Property(x => x.Id).IsModified = false;
-                    _context.SaveChanges();
-                    return entity;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-
-            }
-            return null;
+            var tEntity = _context.Set<T>().FirstOrDefault(e => e.Id.Equals(id));
+            if (tEntity == null) throw new KeyNotFoundException("Data not found");
+            _context.Entry(tEntity).CurrentValues.SetValues(entity);
+            _context.Entry(tEntity).Property(x => x.Id).IsModified = false;
+            _context.SaveChanges();
+            return tEntity;
         }
+
     }
 }

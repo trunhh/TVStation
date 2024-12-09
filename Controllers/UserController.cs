@@ -7,6 +7,7 @@ using TVStation.Data.Model;
 using TVStation.Data.QueryObject;
 using TVStation.Data.DTO;
 using TVStation.Services;
+using TVStation.Repositories.IRepositories;
 
 namespace TVStation.Controllers
 {
@@ -16,11 +17,49 @@ namespace TVStation.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IFileUploadService _uploadService;
-        public UserController(UserManager<User> userManager, IFileUploadService uploadService)
+        private readonly ISiteMapRepository _siteMapRepository;
+        public UserController(UserManager<User> userManager, IFileUploadService uploadService, ISiteMapRepository siteMapRepository)
         {
             _userManager = userManager;
             _uploadService = uploadService;
+            _siteMapRepository = siteMapRepository;
         }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Register([FromBody] RegisterDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var siteMap = _siteMapRepository.GetById(dto.SiteMapId);
+
+                var user = new User
+                {
+                    UserName = dto.Username,
+                    SiteMap = siteMap,
+                };
+
+                var createUser = _userManager.CreateAsync(user, dto.Password).GetAwaiter().GetResult();
+
+                if (createUser.Succeeded)
+                {
+                    var roleResult = _userManager.AddToRoleAsync(user, dto.Role).GetAwaiter().GetResult();
+                    if (roleResult.Succeeded)
+                        return Ok();
+                    else return StatusCode(500, roleResult.Errors);
+                }
+                else return StatusCode(500, createUser.Errors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+
+        }
+
+
         [HttpGet("{username}")]
         [Authorize]
         public IActionResult GetByUsername([FromRoute] string username)

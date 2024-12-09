@@ -29,7 +29,7 @@ namespace TVStation.Controllers
         public IActionResult GetAllPaging([FromQuery] MediaProjectQuery query)
         {
             var res = _repository.GetAllPaging(query);
-            return Ok(res.Map<PlanListDTO<MediaProject>, PlanListDTO<MediaProjectItemDTO>>());
+            return Ok(res.Map<PlanListDTO<MediaProject>, PlanListDTO<PlanDTO>>());
         }
 
         [HttpGet("{id}")]
@@ -108,7 +108,7 @@ namespace TVStation.Controllers
         public IActionResult GetByStatus([FromBody] string status)
         {
             var res = _repository.GetByStatus(status);
-            return Ok(res.Select(i => i.Map<MediaProject, MediaProjectItemDTO>()));
+            return Ok(res.Select(i => i.Map<MediaProject, PlanDTO>()));
         }
     }
 }
