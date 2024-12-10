@@ -104,7 +104,7 @@ builder.Services.AddScoped<IProgramFrameYearRepository, ProgramFrameYearReposito
 builder.Services.AddScoped<ISiteMapRepository, SiteMapRepository>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-
+builder.WebHost.UseWebRoot("wwwroot");
 var app = builder.Build();
 app.UseCors("AllowAll");
 // Configure the HTTP request pipeline.
@@ -113,7 +113,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

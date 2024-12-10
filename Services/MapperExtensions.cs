@@ -46,7 +46,13 @@ public static class MapperExtensions
     {
         if (sourceValue == null)
         {
-            targetProperty.SetValue(target, GetDefaultValue(targetProperty.PropertyType));
+            // Preserve existing default values for non-nullable types or initialize to empty string for strings
+            if (targetProperty.PropertyType == typeof(string))
+            {
+                if (targetProperty.GetValue(target) == null)
+                    targetProperty.SetValue(target, string.Empty);
+            }
+            // Skip setting value if the default is already in place
             return;
         }
 
@@ -65,15 +71,18 @@ public static class MapperExtensions
             var nestedTarget = MapNested(sourceProperty.PropertyType, targetProperty.PropertyType, sourceValue);
             targetProperty.SetValue(target, nestedTarget);
         }
-        else if (targetProperty.PropertyType.IsPrimitive || targetProperty.PropertyType == typeof(string))
-        {
-            targetProperty.SetValue(target, GetDefaultValue(targetProperty.PropertyType));
-        }
-        else
+    }
+
+    private static void SetDefaultValue(object target, PropertyInfo targetProperty)
+    {
+        // Skip resetting if the property already has a non-default value
+        var currentValue = targetProperty.GetValue(target);
+        if (currentValue == null || Equals(currentValue, GetDefaultValue(targetProperty.PropertyType)))
         {
             targetProperty.SetValue(target, GetDefaultValue(targetProperty.PropertyType));
         }
     }
+
 
     private static object MapNested(Type sourceType, Type targetType, object sourceValue)
     {
@@ -101,12 +110,6 @@ public static class MapperExtensions
         }
 
         return targetCollection;
-    }
-
-    private static void SetDefaultValue(object target, PropertyInfo targetProperty)
-    {
-        var defaultValue = GetDefaultValue(targetProperty.PropertyType);
-        targetProperty.SetValue(target, defaultValue);
     }
 
     private static object GetDefaultValue(Type type)

@@ -16,12 +16,10 @@ namespace TVStation.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly IFileUploadService _uploadService;
         private readonly ISiteMapRepository _siteMapRepository;
-        public UserController(UserManager<User> userManager, IFileUploadService uploadService, ISiteMapRepository siteMapRepository)
+        public UserController(UserManager<User> userManager, ISiteMapRepository siteMapRepository)
         {
             _userManager = userManager;
-            _uploadService = uploadService;
             _siteMapRepository = siteMapRepository;
         }
 
@@ -106,7 +104,6 @@ namespace TVStation.Controllers
             if (!string.IsNullOrEmpty(dto.Email)) user.Email = dto.Email;
             if (!string.IsNullOrEmpty(dto.Name)) user.Name = dto.Name;
             if (!string.IsNullOrEmpty(dto.PhoneNumber)) user.PhoneNumber = dto.PhoneNumber;
-            if (dto.Avatar != null &&  dto.Avatar.Length > 0) user.AvatarUrl = _uploadService.UploadFile(dto.Avatar);
             var update = _userManager.UpdateAsync(user).GetAwaiter().GetResult();
             if (!update.Succeeded) return StatusCode(500, "Failed to update user info.");
             return Ok(user.Map<User, UserDTO>());
