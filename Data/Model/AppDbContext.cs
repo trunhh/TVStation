@@ -34,14 +34,20 @@ namespace TVStation.Data.Model
                 },
                 new IdentityRole
                 {
+                    Name = UserRole.Director,
+                    NormalizedName = UserRole.Director.ToUpper(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                },
+                new IdentityRole
+                {
                     Name = UserRole.Manager,
                     NormalizedName = UserRole.Manager.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
                 new IdentityRole
                 {
-                    Name = UserRole.Employee,
-                    NormalizedName = UserRole.Employee.ToUpper(),
+                    Name = UserRole.Reporter,
+                    NormalizedName = UserRole.Reporter.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 }
             };

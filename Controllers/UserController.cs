@@ -24,7 +24,7 @@ namespace TVStation.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin)]
         public IActionResult Register([FromBody] RegisterDTO dto)
         {
             try
@@ -90,7 +90,7 @@ namespace TVStation.Controllers
 
         [HttpPut]
         [Authorize]
-        public IActionResult Update([FromBody]UserUpdateDTO dto)
+        public IActionResult Update([FromBody]UserDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
@@ -100,13 +100,26 @@ namespace TVStation.Controllers
                 .FirstOrDefaultAsync(u => u.Id == userIdClaim)
                 .GetAwaiter().GetResult();
             if (user == null) return NotFound("User not found.");
-            if (!string.IsNullOrEmpty(dto.Address)) user.Address = dto.Address;
-            if (!string.IsNullOrEmpty(dto.Email)) user.Email = dto.Email;
-            if (!string.IsNullOrEmpty(dto.Name)) user.Name = dto.Name;
-            if (!string.IsNullOrEmpty(dto.PhoneNumber)) user.PhoneNumber = dto.PhoneNumber;
-            var update = _userManager.UpdateAsync(user).GetAwaiter().GetResult();
+            var update = _userManager.UpdateAsync(dto.Map<UserDTO,User>()).GetAwaiter().GetResult();
             if (!update.Succeeded) return StatusCode(500, "Failed to update user info.");
             return Ok(user.Map<User, UserDTO>());
+        }
+
+        [HttpPut("Password")]
+        [Authorize]
+        public IActionResult UpdatePassword([FromBody] UpdatePasswordDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
+            if (userIdClaim == null) return Unauthorized("User ID not found in claims.");
+            var user = _userManager.Users
+                .Include(u => u.SiteMap)
+                .FirstOrDefaultAsync(u => u.Id == userIdClaim)
+                .GetAwaiter().GetResult();
+            if (user == null) return NotFound("User not found.");
+            var update = _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.OldPassword).GetAwaiter().GetResult();
+            if (!update.Succeeded) return Unauthorized("Wrong password");
+            return Ok();
         }
     }
 }

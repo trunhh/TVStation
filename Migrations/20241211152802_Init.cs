@@ -227,7 +227,6 @@ namespace TVStation.Migrations
                     IsPersonal = table.Column<bool>(type: "bit", nullable: false),
                     SiteMapId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Airdate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ObjectType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Genre = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -284,7 +283,8 @@ namespace TVStation.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsPersonal = table.Column<bool>(type: "bit", nullable: false),
-                    Year = table.Column<int>(type: "int", nullable: false)
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Week = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -358,9 +358,10 @@ namespace TVStation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "49a3412f-73d7-4ef4-819b-347e125db64e", "ad435e56-a21d-4a12-b0f7-85ccc22c06a1", "Employee", "EMPLOYEE" },
-                    { "dd3a3608-f3be-4c0e-ad9c-71f3bd5c072d", "3a162ec2-f7e4-4b9e-9312-06683ef474d0", "Admin", "ADMIN" },
-                    { "f664c215-c3a4-45fd-9267-1e29dab64920", "b9338db7-49ea-4943-8961-55929caee52a", "Manager", "MANAGER" }
+                    { "081f3269-cbf5-42bd-a1c5-bbfa1cbda067", "94b0c874-daae-46ac-8491-acb3212b339d", "REPORTER", "REPORTER" },
+                    { "7f73d0e5-acf7-4f17-a906-5d4cddeeaa1a", "b9352574-1ecd-4bf6-8640-a655e40a213c", "MANAGER", "MANAGER" },
+                    { "ce59bb62-6358-45cd-bb6f-737170595397", "79debbaf-7c6b-4d48-a1f4-c94aa99d8403", "ADMIN", "ADMIN" },
+                    { "eb07efd6-aa8f-4a27-89bd-44bb9cf16c33", "fabe7d60-2e3b-402d-a427-cdd8dd5e1899", "DIRECTOR", "DIRECTOR" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TVStation.Data.Model;
+using TVStation.Data.Constant;
 using TVStation.Repositories.IRepositories;
 using TVStation.Repositories.Repositories;
 using TVStation.Repositories.Repositories.PlanRepositories;
@@ -93,6 +94,13 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
     };
+});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(UserRole.Admin, policy => policy.RequireRole(UserRole.Admin));
+    options.AddPolicy(UserRole.Director, policy => policy.RequireRole(UserRole.Director));
+    options.AddPolicy(UserRole.Manager, policy => policy.RequireRole(UserRole.Manager));
+    options.AddPolicy(UserRole.Reporter, policy => policy.RequireRole(UserRole.Reporter));
 });
 
 builder.Services.AddScoped<IMediaProjectRepository, MediaProjectRepository>();

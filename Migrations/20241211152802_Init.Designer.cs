@@ -12,7 +12,7 @@ using TVStation.Data.Model;
 namespace TVStation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241120174244_Init")]
+    [Migration("20241211152802_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -54,24 +54,31 @@ namespace TVStation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dd3a3608-f3be-4c0e-ad9c-71f3bd5c072d",
-                            ConcurrencyStamp = "3a162ec2-f7e4-4b9e-9312-06683ef474d0",
-                            Name = "Admin",
+                            Id = "ce59bb62-6358-45cd-bb6f-737170595397",
+                            ConcurrencyStamp = "79debbaf-7c6b-4d48-a1f4-c94aa99d8403",
+                            Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f664c215-c3a4-45fd-9267-1e29dab64920",
-                            ConcurrencyStamp = "b9338db7-49ea-4943-8961-55929caee52a",
-                            Name = "Manager",
+                            Id = "eb07efd6-aa8f-4a27-89bd-44bb9cf16c33",
+                            ConcurrencyStamp = "fabe7d60-2e3b-402d-a427-cdd8dd5e1899",
+                            Name = "DIRECTOR",
+                            NormalizedName = "DIRECTOR"
+                        },
+                        new
+                        {
+                            Id = "7f73d0e5-acf7-4f17-a906-5d4cddeeaa1a",
+                            ConcurrencyStamp = "b9352574-1ecd-4bf6-8640-a655e40a213c",
+                            Name = "MANAGER",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "49a3412f-73d7-4ef4-819b-347e125db64e",
-                            ConcurrencyStamp = "ad435e56-a21d-4a12-b0f7-85ccc22c06a1",
-                            Name = "Employee",
-                            NormalizedName = "EMPLOYEE"
+                            Id = "081f3269-cbf5-42bd-a1c5-bbfa1cbda067",
+                            ConcurrencyStamp = "94b0c874-daae-46ac-8491-acb3212b339d",
+                            Name = "REPORTER",
+                            NormalizedName = "REPORTER"
                         });
                 });
 
@@ -260,10 +267,6 @@ namespace TVStation.Migrations
                     b.Property<bool>("IsPersonal")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ObjectType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Sector")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -421,6 +424,9 @@ namespace TVStation.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Week")
+                        .HasColumnType("int");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");

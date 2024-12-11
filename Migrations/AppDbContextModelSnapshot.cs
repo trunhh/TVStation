@@ -51,24 +51,31 @@ namespace TVStation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eba5100e-ea22-4cde-9aa8-651bfce972d1",
-                            ConcurrencyStamp = "ba25e090-865a-4520-ad2d-749b142f2190",
+                            Id = "ce59bb62-6358-45cd-bb6f-737170595397",
+                            ConcurrencyStamp = "79debbaf-7c6b-4d48-a1f4-c94aa99d8403",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "92c1bc84-22be-400d-80f2-b286f2045418",
-                            ConcurrencyStamp = "b72dde77-2d85-4069-87f8-e62249a1e889",
+                            Id = "eb07efd6-aa8f-4a27-89bd-44bb9cf16c33",
+                            ConcurrencyStamp = "fabe7d60-2e3b-402d-a427-cdd8dd5e1899",
+                            Name = "DIRECTOR",
+                            NormalizedName = "DIRECTOR"
+                        },
+                        new
+                        {
+                            Id = "7f73d0e5-acf7-4f17-a906-5d4cddeeaa1a",
+                            ConcurrencyStamp = "b9352574-1ecd-4bf6-8640-a655e40a213c",
                             Name = "MANAGER",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "0f9dd30a-1f5c-446e-867b-3f45097e375a",
-                            ConcurrencyStamp = "9a7a34a0-b96a-4708-9587-6fa59b256634",
-                            Name = "EMPLOYEE",
-                            NormalizedName = "EMPLOYEE"
+                            Id = "081f3269-cbf5-42bd-a1c5-bbfa1cbda067",
+                            ConcurrencyStamp = "94b0c874-daae-46ac-8491-acb3212b339d",
+                            Name = "REPORTER",
+                            NormalizedName = "REPORTER"
                         });
                 });
 

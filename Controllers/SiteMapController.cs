@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TVStation.Data.Model;
 using TVStation.Data.DTO;
 using TVStation.Repositories.IRepositories;
+using TVStation.Data.Constant;
 
 namespace TVStation.Controllers
 {
@@ -34,7 +35,7 @@ namespace TVStation.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin)]
         public IActionResult Create([FromBody] SiteMapCreateDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -52,7 +53,7 @@ namespace TVStation.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin)]
         public IActionResult Update([FromRoute] Guid id, [FromBody] SiteMapDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -66,7 +67,7 @@ namespace TVStation.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin)]
         public IActionResult Delete([FromRoute] Guid id)
         {
             var result = _repository.Delete(id);

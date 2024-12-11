@@ -13,6 +13,6 @@ namespace TVStation.Data.DTO
         [Required]
         public Guid SiteMapId { get; set; }
         [Required]
-        public string Role { get; set; } = UserRole.Employee;
+        public string Role { get; set; } = string.Empty;
     }
 }
