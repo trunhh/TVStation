@@ -24,7 +24,7 @@ namespace TVStation.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult Get([FromRoute] string username)
+        public IActionResult Get()
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
@@ -49,7 +49,11 @@ namespace TVStation.Controllers
                 .FirstOrDefaultAsync(u => u.Id == userIdClaim)
                 .GetAwaiter().GetResult();
             if (user == null) return NotFound("User not found.");
-            var update = _userManager.UpdateAsync(dto.Map<UserDTO,User>()).GetAwaiter().GetResult();
+            user.Name = dto.Name;
+            user.Email = dto.Email;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.Address = dto.Address;
+            var update = _userManager.UpdateAsync(user).GetAwaiter().GetResult();
             if (!update.Succeeded) return StatusCode(500, "Failed to update user info.");
             return Ok(user.Map<User, UserDTO>());
         }
@@ -66,8 +70,8 @@ namespace TVStation.Controllers
                 .FirstOrDefaultAsync(u => u.Id == userIdClaim)
                 .GetAwaiter().GetResult();
             if (user == null) return NotFound("User not found.");
-            var update = _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.OldPassword).GetAwaiter().GetResult();
-            if (!update.Succeeded) return Unauthorized("Wrong password");
+            var update = _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword).GetAwaiter().GetResult();
+            if (!update.Succeeded) return Unauthorized(update.Errors.First().Description);
             return Ok();
         }
     }

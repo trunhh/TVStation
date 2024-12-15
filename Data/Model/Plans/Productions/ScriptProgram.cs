@@ -17,6 +17,6 @@ namespace TVStation.Data.Model.Plans.Productions
         public bool IsPersonal { get; set; }
         public SiteMap? SiteMap { get; set; }
         public DateTime Airdate { get; set; }
-        public string Category {  get; set; } = string.Empty;
+        public string? Category {  get; set; } = string.Empty;
     }
 }
