@@ -132,27 +132,6 @@ namespace TVStation.Controllers
             }
         }
 
-        [HttpPut("Status/{id}")]
-        [Authorize]
-        public IActionResult UpdateStatus([FromRoute] Guid id, [FromBody] string status)
-        {
-            try
-            {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-                var result = _repository.SetStatus(id, status);
-                if (result == null) return BadRequest(status);
-                return Ok(result.Map<ScriptProgram, ScriptProgramDTO>());
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
         [HttpGet("Status")]
         [Authorize]
         public IActionResult GetByStatus([FromBody] string status)

@@ -15,34 +15,6 @@ namespace TVStation.Repositories.Repositories.PlanRepositories
         public const int PageSize = 10;
         public PlanRepository(AppDbContext context) : base(context) { }
 
-        public T? SetStatus(Guid id, string status)
-        {
-            var plan = GetById(id);
-            if (plan == null) return null;
-            switch (status)
-            {
-                case PlanStatus.WaitingForApproval:
-                    if (plan.Status != PlanStatus.InProgress) return null;
-                    break;
-                case PlanStatus.Approved:
-                    if (plan.Status != PlanStatus.WaitingForApproval) return null;
-                    break;
-                case PlanStatus.Returned:
-                    if (plan.Status != PlanStatus.WaitingForApproval) return null;
-                    break;
-                case PlanStatus.Retrieved:
-                    if (plan.Status != PlanStatus.Approved) return null;
-                    break;
-                case PlanStatus.Cancelled:
-                    break;
-                default: return null;
-            }
-            plan.Status = status;
-            _context.SaveChanges();
-            return plan;
-        }
-
-
         public virtual PlanListDTO<T> GetAllPaging(Q query)
         {
             var queryable = GetQueriedData(query);

@@ -28,14 +28,17 @@ namespace TVStation.Controllers
             if (user == null) return Unauthorized("Wrong username or password!");
             var result = _signInManager.CheckPasswordSignInAsync(user, req.Password, false).GetAwaiter().GetResult();
             if (!result.Succeeded) return Unauthorized("Wrong username or password!");
-            return Ok(new AuthDTO
+            var dto = new AuthDTO
             {
                 UserName = user.UserName,
                 AvatarUrl = user.AvatarUrl,
                 Name = user.Name,
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user)
-            });
+            };
+            var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
+            if (roles != null && roles.Count > 0) dto.Role = roles[0];
+            return Ok(dto);
         }
     }
 }
