@@ -59,7 +59,7 @@ namespace TVStation.Repositories.Repositories.PlanRepositories
 
         public IEnumerable<T> GetByStatus(string status)
         {
-            return _context.Set<T>().Where(s => s.IsDeleted == false && s.Status == status);
+            return _context.Set<T>().Where(s => s.IsDeleted == false && status.Contains(s.Status));
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IProgramFrame : IPlan
     {
-        int Year { get; set; }
+        DateTime Airdate { get; set; }
     }
 }

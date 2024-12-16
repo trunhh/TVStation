@@ -132,14 +132,32 @@ namespace TVStation.Controllers
             }
         }
 
-        [HttpGet("Status")]
+        private static readonly Dictionary<string, string> RoleToAction = new Dictionary<string, string>
+        {
+            {UserRole.Reporter, PlanStatus.Returned+PlanStatus.Approved},
+            {UserRole.Manager, PlanStatus.WaitingForApproval},
+            {UserRole.Director, PlanStatus.WaitingForApproval},
+            {UserRole.Admin, PlanStatus.Returned+PlanStatus.Approved+PlanStatus.WaitingForApproval}
+        };
+
+        [HttpGet("Summary")]
         [Authorize]
-        public IActionResult GetByStatus([FromBody] string status)
+        public IActionResult GetByStatus()
         {
             try
             {
-                var res = _repository.GetByStatus(status);
-                return Ok(res.Select(i => i.Map<ScriptProgram, ScriptProgramDTO>()));
+                var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
+                if (userIdClaim == null) return Unauthorized("User ID not found in claims.");
+
+                var user = _userManager.Users
+                    .Include(u => u.SiteMap)
+                    .FirstOrDefaultAsync(u => u.Id == userIdClaim)
+                    .GetAwaiter().GetResult();
+                if (user == null) return NotFound("User not found.");
+                var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
+
+                var res = _repository.GetByStatus(RoleToAction[roles[0]]);
+                return Ok(res.Select(i => i.Map<ScriptProgram, PlanNotiDTO>()));
             }
             catch (Exception ex)
             {

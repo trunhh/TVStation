@@ -6,13 +6,13 @@ using TVStation.Repositories.IRepositories;
 namespace TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepositories
 {
     public class ProgramFrameWeekRepository :
-        ProgramFrameRepository<ProgramFrameWeek, ProgramFrameWeekQuery>, IProgramFrameWeekRepository
+        PlanRepository<ProgramFrameWeek, ProgramFrameWeekQuery>, IProgramFrameWeekRepository
     {
         public ProgramFrameWeekRepository(AppDbContext context) : base(context) { }
         protected override IQueryable<ProgramFrameWeek> GetQueriedData(ProgramFrameWeekQuery query)
         {
             var queryable = base.GetQueriedData(query);
-            if (query.Week != null) queryable = queryable.Where(s => s.Week == query.Week);
+            if (query.Airdate != null) queryable = queryable.Where(s => s.Airdate.Date == query.Airdate.Value.Date);
             return queryable;
         }
     }

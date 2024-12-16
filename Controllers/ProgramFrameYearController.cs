@@ -130,21 +130,5 @@ namespace TVStation.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
-
-        [HttpGet("Status")]
-        [Authorize]
-        public IActionResult GetByStatus([FromBody] string status)
-        {
-            try
-            {
-                var res = _repository.GetByStatus(status);
-                return Ok(res.Select(i => i.Map<ProgramFrameYear, ProgramFrameYearDTO>()));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
     }
 }

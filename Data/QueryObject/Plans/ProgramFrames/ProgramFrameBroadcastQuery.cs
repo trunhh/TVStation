@@ -1,6 +1,6 @@
 ﻿namespace TVStation.Data.QueryObject.Plans.ProgramFrames
 {
-    public class ProgramFrameBroadcastQuery : IProgramFrameQuery, IPagingQuery
+    public class ProgramFrameBroadcastQuery : IPlanQuery, IPagingQuery
     {
         public string? Keyword { get; set; } = string.Empty;
         public string? Sector { get; set; } = string.Empty;

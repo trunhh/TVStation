@@ -7,7 +7,7 @@ using TVStation.Repositories.IRepositories;
 namespace TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepositories
 {
     public class ProgramFrameBroadcastRepository :
-        ProgramFrameRepository<ProgramFrameBroadcast, ProgramFrameBroadcastQuery>, IProgramFrameBroadcastRepository
+        PlanRepository<ProgramFrameBroadcast, ProgramFrameBroadcastQuery>, IProgramFrameBroadcastRepository
     {
         public ProgramFrameBroadcastRepository(AppDbContext dbContext) : base(dbContext) { }
 

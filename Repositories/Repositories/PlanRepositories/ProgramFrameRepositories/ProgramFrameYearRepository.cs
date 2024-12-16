@@ -6,8 +6,15 @@ using TVStation.Repositories.IRepositories;
 namespace TVStation.Repositories.Repositories.PlanRepositories.ProgramFrameRepositories
 {
     public class ProgramFrameYearRepository :
-        ProgramFrameRepository<ProgramFrameYear, ProgramFrameYearQuery>, IProgramFrameYearRepository
+        PlanRepository<ProgramFrameYear, ProgramFrameYearQuery>, IProgramFrameYearRepository
     {
         public ProgramFrameYearRepository(AppDbContext context) : base(context) { }
+
+        protected override IQueryable<ProgramFrameYear> GetQueriedData(ProgramFrameYearQuery query)
+        {
+            var queryable = base.GetQueriedData(query);
+            if (query.Airdate != null) queryable = queryable.Where(s => s.Airdate.Year == query.Airdate.Value.Year);
+            return queryable;
+        }
     }
 }
