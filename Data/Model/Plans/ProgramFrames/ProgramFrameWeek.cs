@@ -2,7 +2,7 @@
 
 namespace TVStation.Data.Model.Plans.ProgramFrames
 {
-    public class ProgramFrameWeek : IProgramFrame, IEntity
+    public class ProgramFrameWeek : IPlan, IEntity
     {
         public Guid Id { get; set; }
         public DateTime CreatedDate { get; set; }

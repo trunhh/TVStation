@@ -140,7 +140,7 @@ namespace TVStation.Controllers
             {UserRole.Admin, PlanStatus.Returned+PlanStatus.Approved+PlanStatus.WaitingForApproval}
         };
 
-        [HttpGet("Summary")]
+        [HttpGet("ToDo")]
         [Authorize]
         public IActionResult GetByStatus()
         {

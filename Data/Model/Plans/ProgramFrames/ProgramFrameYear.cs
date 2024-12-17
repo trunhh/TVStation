@@ -2,7 +2,7 @@
 
 namespace TVStation.Data.Model.Plans.ProgramFrames
 {
-    public class ProgramFrameYear : IProgramFrame, IEntity
+    public class ProgramFrameYear : IPlan, IEntity
     {
         public Guid Id { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -15,6 +15,6 @@ namespace TVStation.Data.Model.Plans.ProgramFrames
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public bool IsPersonal { get; set; }
-        public DateTime Airdate { get; set; }
+        public int Year { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace TVStation.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = UserRole.Admin)]
+        //[Authorize(Roles = UserRole.Admin)]
         public IActionResult Register([FromBody] RegisterDTO dto)
         {
             try
