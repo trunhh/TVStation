@@ -28,6 +28,13 @@ namespace TVStation.Repositories.Repositories.PlanRepositories.ProductionPlanRep
                     .AsQueryable()
                     .Where(s => s.SiteMap != null && s.SiteMap.Id == query.SiteMapId);
             }
+            if (query.UserName != null)
+            {
+                queryable = queryable
+                    .Include(s => s.Creator)
+                    .AsQueryable()
+                    .Where(s => s.Creator != null && s.Creator.UserName == query.UserName);
+            }
             return queryable;
         }
     }

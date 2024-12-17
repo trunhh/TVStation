@@ -11,6 +11,7 @@
         public DateTime? StartDate { get; set; } = DateTime.MinValue;
         public DateTime? EndDate { get; set; } = DateTime.MaxValue;
         public Guid? SiteMapId { get; set; }
+        public string? UserName { get; set; }
         
     }
 }

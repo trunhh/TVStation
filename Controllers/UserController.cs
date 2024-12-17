@@ -53,6 +53,7 @@ namespace TVStation.Controllers
             user.Email = dto.Email;
             user.PhoneNumber = dto.PhoneNumber;
             user.Address = dto.Address;
+            user.AvatarUrl = dto.AvatarUrl;
             var update = _userManager.UpdateAsync(user).GetAwaiter().GetResult();
             if (!update.Succeeded) return StatusCode(500, "Failed to update user info.");
             return Ok(user.Map<User, UserDTO>());
