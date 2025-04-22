@@ -3,21 +3,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TVStation.Data.Constant;
 using TVStation.Data.DTO.Plans;
-using TVStation.Data.Model.Plans.ProgramFrames;
 using TVStation.Data.Model;
-using TVStation.Data.QueryObject.Plans.ProgramFrames;
 using TVStation.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using TVStation.Data.QueryObject;
 
 namespace TVStation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProgramFrameYearController : ControllerBase
+    public class EventController : ControllerBase
     {
-        private readonly IProgramFrameYearRepository _repository;
+        private readonly IEventRepository _repository;
         private readonly UserManager<User> _userManager;
-        public ProgramFrameYearController(IProgramFrameYearRepository repository, UserManager<User> userManager)
+        public EventController(IEventRepository repository, UserManager<User> userManager)
         {
             _repository = repository;
             _userManager = userManager;
@@ -25,12 +24,12 @@ namespace TVStation.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetAllPaging([FromQuery] ProgramFrameYearQuery query)
+        public IActionResult GetAllPaging([FromQuery] EventQuery query)
         {
             try
             {
-                var res = _repository.GetAllPaging(query);
-                return Ok(res.Map<PlanListDTO<ProgramFrameYear>, PlanListDTO<PlanDTO>>());
+                var res = _repository.GetAll(query);
+                return Ok(res.Map<EventListDTO<Event>, EventListDTO<EventResDTO>>());
             }
             catch (Exception ex)
             {
@@ -47,7 +46,7 @@ namespace TVStation.Controllers
             {
                 var res = _repository.GetById(id);
                 if (res == null) return NotFound();
-                return Ok(res.Map<ProgramFrameYear, ProgramFrameYearDTO>());
+                return Ok(res.Map<Event, EventReqDTO>());
             }
             catch (Exception ex)
             {
@@ -58,7 +57,7 @@ namespace TVStation.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] ProgramFrameYearDTO dto)
+        public IActionResult Create([FromBody] EventReqDTO dto)
         {
             try
             {
@@ -72,7 +71,7 @@ namespace TVStation.Controllers
                     .GetAwaiter().GetResult();
                 if (user == null) return NotFound("User not found.");
 
-                var data = dto.Map<ProgramFrameYearDTO, ProgramFrameYear>();
+                var data = dto.Map<EventReqDTO, Event>();
                 data.Creator = user;
                 data.CreatedDate = DateTime.Now;
                 data.IsDeleted = false;
@@ -81,7 +80,7 @@ namespace TVStation.Controllers
                 var result = _repository.Create(data);
                 if (result == null) return StatusCode(500, "Failed to create");
 
-                return Ok(result.Map<ProgramFrameYear, ProgramFrameYearDTO>());
+                return Ok(result.Map<Event, EventReqDTO>());
             }
             catch (Exception ex)
             {
@@ -92,14 +91,14 @@ namespace TVStation.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] ProgramFrameYearDTO dto)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] EventReqDTO dto)
         {
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
                 var result = _repository.Update(id, dto);
                 if (result == null) return StatusCode(500, "Failed to update");
-                return Ok(result.Map<ProgramFrameYear, ProgramFrameYearDTO>());
+                return Ok(result.Map<Event, EventReqDTO>());
             }
             catch (KeyNotFoundException ex)
             {

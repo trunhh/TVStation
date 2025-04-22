@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TVStation.Data.Constant;
-using TVStation.Data.Model.Plans;
 using TVStation.Data.Model.Plans.Productions;
 using TVStation.Data.Model.Plans.ProgramFrames;
 namespace TVStation.Data.Model
@@ -13,7 +12,7 @@ namespace TVStation.Data.Model
         public virtual DbSet<SiteMap> SiteMap { get; set; }
         /*        public virtual DbSet<Domain.Task> Task { get; set; }
                 public virtual DbSet<WorkSchedule> WorkSchedule { get; set; }*/
-        public virtual DbSet<ProgramFrameYear> ProgramFrameYear { get; set; }
+        public virtual DbSet<Event> ProgramFrameYear { get; set; }
         public virtual DbSet<ProgramFrameWeek> ProgramFrameWeek { get; set; }
         public virtual DbSet<ProgramFrameBroadcast> ProgramFrameBroadcast { get; set; }
         public virtual DbSet<ProductionRegistration> ProductionRegistration { get; set; }
