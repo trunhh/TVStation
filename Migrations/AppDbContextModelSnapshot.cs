@@ -22,6 +22,21 @@ namespace TVStation.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("EventUser", b =>
+                {
+                    b.Property<Guid>("CollaboratingEventsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CollaboratorsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CollaboratingEventsId", "CollaboratorsId");
+
+                    b.HasIndex("CollaboratorsId");
+
+                    b.ToTable("EventCollaborators", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -51,29 +66,29 @@ namespace TVStation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "01d76b2f-db7e-4032-8aeb-4ebf6a2db61e",
-                            ConcurrencyStamp = "e9bd8ae6-66a5-4cc1-99e4-c28693b8d652",
+                            Id = "436e7f07-9046-4e7e-8cce-783c18a28a96",
+                            ConcurrencyStamp = "3860f20c-b31e-4a87-b341-bf9900e94922",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0d81a3a1-9c12-4a4c-a8b9-df2caf6dc123",
-                            ConcurrencyStamp = "e44811f0-9562-4e79-ba95-f3e9903271e0",
+                            Id = "61b850c6-628f-44e3-9cd9-d70d6dc1729e",
+                            ConcurrencyStamp = "1f4eb418-4bc9-487c-8021-4e132bf2d8d9",
                             Name = "DIRECTOR",
                             NormalizedName = "DIRECTOR"
                         },
                         new
                         {
-                            Id = "0346cd48-ce89-48a1-903c-d51fb3a34107",
-                            ConcurrencyStamp = "d3f2665f-7d51-40ab-82e4-8e8df8150ca4",
+                            Id = "aa155b68-5163-4f67-bb69-8543fee5561b",
+                            ConcurrencyStamp = "ceb8c229-8150-4095-a26a-93eec612cd76",
                             Name = "MANAGER",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "2c998fca-e4f9-4210-b542-48a439d4350b",
-                            ConcurrencyStamp = "7f567fa3-1a51-49a7-9e37-f149997d680e",
+                            Id = "5017f36c-705a-4b9c-82f3-3b8e2c57b065",
+                            ConcurrencyStamp = "b5be22bd-ed22-4e05-8e1e-7124e03906a8",
                             Name = "REPORTER",
                             NormalizedName = "REPORTER"
                         });
@@ -185,10 +200,50 @@ namespace TVStation.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TVStation.Data.Model.Plans.MediaProject", b =>
+            modelBuilder.Entity("TVStation.Data.Model.Channel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BackgroundColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BorderColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DragBackgroundColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Channel");
+                });
+
+            modelBuilder.Entity("TVStation.Data.Model.Event", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ChannelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
@@ -201,24 +256,38 @@ namespace TVStation.Migrations
                     b.Property<string>("CreatorId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("End")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAllday")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsPersonal")
+                    b.Property<bool>("IsReadOnly")
                         .HasColumnType("bit");
 
                     b.Property<string>("MediaUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RecurrenceRule")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Sector")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SiteMapId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Summary")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -228,247 +297,11 @@ namespace TVStation.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("SiteMapId");
-
-                    b.ToTable("MediaProject");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.Productions.ProductionRegistration", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Airdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Genre")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPersonal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Sector")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("SiteMapId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasIndex("ChannelId");
 
                     b.HasIndex("CreatorId");
 
-                    b.HasIndex("SiteMapId");
-
-                    b.ToTable("ProductionRegistration");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.Productions.ScriptProgram", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Airdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPersonal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Sector")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("SiteMapId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("SiteMapId");
-
-                    b.ToTable("ScriptProgram");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.ProgramFrames.ProgramFrameBroadcast", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Airdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPersonal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Sector")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.ToTable("ProgramFrameBroadcast");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.ProgramFrames.ProgramFrameWeek", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Airdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPersonal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Sector")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.ToTable("ProgramFrameWeek");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.ProgramFrames.ProgramFrameYear", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPersonal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Sector")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.ToTable("ProgramFrameYear");
+                    b.ToTable("Event");
                 });
 
             modelBuilder.Entity("TVStation.Data.Model.SiteMap", b =>
@@ -574,6 +407,21 @@ namespace TVStation.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("EventUser", b =>
+                {
+                    b.HasOne("TVStation.Data.Model.Event", null)
+                        .WithMany()
+                        .HasForeignKey("CollaboratingEventsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TVStation.Data.Model.User", null)
+                        .WithMany()
+                        .HasForeignKey("CollaboratorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -625,74 +473,18 @@ namespace TVStation.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TVStation.Data.Model.Plans.MediaProject", b =>
+            modelBuilder.Entity("TVStation.Data.Model.Event", b =>
                 {
+                    b.HasOne("TVStation.Data.Model.Channel", "Channel")
+                        .WithMany()
+                        .HasForeignKey("ChannelId");
+
                     b.HasOne("TVStation.Data.Model.User", "Creator")
                         .WithMany()
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("TVStation.Data.Model.SiteMap", "SiteMap")
-                        .WithMany()
-                        .HasForeignKey("SiteMapId");
-
-                    b.Navigation("Creator");
-
-                    b.Navigation("SiteMap");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.Productions.ProductionRegistration", b =>
-                {
-                    b.HasOne("TVStation.Data.Model.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
-
-                    b.HasOne("TVStation.Data.Model.SiteMap", "SiteMap")
-                        .WithMany()
-                        .HasForeignKey("SiteMapId");
-
-                    b.Navigation("Creator");
-
-                    b.Navigation("SiteMap");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.Productions.ScriptProgram", b =>
-                {
-                    b.HasOne("TVStation.Data.Model.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
-
-                    b.HasOne("TVStation.Data.Model.SiteMap", "SiteMap")
-                        .WithMany()
-                        .HasForeignKey("SiteMapId");
-
-                    b.Navigation("Creator");
-
-                    b.Navigation("SiteMap");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.ProgramFrames.ProgramFrameBroadcast", b =>
-                {
-                    b.HasOne("TVStation.Data.Model.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
-
-                    b.Navigation("Creator");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.ProgramFrames.ProgramFrameWeek", b =>
-                {
-                    b.HasOne("TVStation.Data.Model.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
-
-                    b.Navigation("Creator");
-                });
-
-            modelBuilder.Entity("TVStation.Data.Model.Plans.ProgramFrames.ProgramFrameYear", b =>
-                {
-                    b.HasOne("TVStation.Data.Model.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
+                    b.Navigation("Channel");
 
                     b.Navigation("Creator");
                 });

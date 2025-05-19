@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace TVStation.Data.Model
 {
@@ -8,5 +9,7 @@ namespace TVStation.Data.Model
         public string Address { get; set; } = string.Empty;
         public string AvatarUrl { get; set; } = string.Empty;
         public SiteMap? SiteMap { get; set; }
+        [JsonIgnore]
+        public List<Event> CollaboratingEvents { get; set; } = new();
     }
 }

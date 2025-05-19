@@ -6,8 +6,8 @@ namespace TVStation.Data.DTO.Plans
 {
     public class EventReqDTO
     {
-        public List<User>? Collaborators { get; set; }
-        public Chanel? Chanel { get; set; }
+        public List<string> CollaboratorUsername { get; set; } = new List<string>();
+        public Guid ChannelId { get; set; }
         public string Status { get; set; } = string.Empty;
         public string MediaUrl { get; set; } = string.Empty;
         public string Sector { get; set; } = string.Empty;

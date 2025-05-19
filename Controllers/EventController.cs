@@ -15,10 +15,12 @@ namespace TVStation.Controllers
     public class EventController : ControllerBase
     {
         private readonly IEventRepository _repository;
+        private readonly IChannelRepository _channelRepository;
         private readonly UserManager<User> _userManager;
-        public EventController(IEventRepository repository, UserManager<User> userManager)
+        public EventController(IEventRepository repository, IChannelRepository channelRepository, UserManager<User> userManager)
         {
             _repository = repository;
+            _channelRepository = channelRepository;
             _userManager = userManager;
         }
 
@@ -29,7 +31,7 @@ namespace TVStation.Controllers
             try
             {
                 var res = _repository.GetAll(query);
-                return Ok(res.Map<EventListDTO<Event>, EventListDTO<EventResDTO>>());
+                return Ok(res);
             }
             catch (Exception ex)
             {
@@ -72,6 +74,15 @@ namespace TVStation.Controllers
                 if (user == null) return NotFound("User not found.");
 
                 var data = dto.Map<EventReqDTO, Event>();
+                data.Channel = _channelRepository.GetById(dto.ChannelId);
+                data.Collaborators = dto.CollaboratorUsername
+                                    .Select(username => _userManager.Users.FirstOrDefault(u => u.UserName == username))
+                                    .Where(user => user != null)
+                                    .Select(user => user!) // null-forgiving operator
+                                    .ToList();
+                data.Collaborators.Add(user);
+                data.Collaborators.Distinct();
+
                 data.Creator = user;
                 data.CreatedDate = DateTime.Now;
                 data.IsDeleted = false;
@@ -80,7 +91,7 @@ namespace TVStation.Controllers
                 var result = _repository.Create(data);
                 if (result == null) return StatusCode(500, "Failed to create");
 
-                return Ok(result.Map<Event, EventReqDTO>());
+                return Ok(result.Map<Event, EventResDTO>());
             }
             catch (Exception ex)
             {
@@ -91,7 +102,7 @@ namespace TVStation.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] EventReqDTO dto)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] object dto)
         {
             try
             {

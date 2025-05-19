@@ -6,6 +6,6 @@ namespace TVStation.Repositories.IRepositories
 {
     public interface IEventRepository  : IGenericRepository<Event>
     {
-        EventListDTO<Event> GetAll(EventQuery query);
+        EventListDTO GetAll(EventQuery query);
     }
 }

@@ -8,8 +8,6 @@ using TVStation.Data.Model;
 using TVStation.Data.Constant;
 using TVStation.Repositories.IRepositories;
 using TVStation.Repositories.Repositories;
-using TVStation.Repositories.Repositories.PlanRepositories;
-using TVStation.Repositories.Repositories.PlanRepositories.ProductionPlanRepositories;
 using TVStation.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -102,12 +100,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(UserRole.Reporter, policy => policy.RequireRole(UserRole.Reporter));
 });
 
-builder.Services.AddScoped<IMediaProjectRepository, MediaProjectRepository>();
-builder.Services.AddScoped<IProductionRegistrationRepository, ProductionRegistrationRepository>();
-builder.Services.AddScoped<IScriptProgramRepository, ScriptProgramRepository>();
-builder.Services.AddScoped<IProgramFrameWeekRepository, ProgramFrameWeekRepository>();
-builder.Services.AddScoped<IProgramFrameBroadcastRepository, ProgramFrameBroadcastRepository>();
-builder.Services.AddScoped<IEventRepository, ProgramFrameYearRepository>();
+builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISiteMapRepository, SiteMapRepository>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

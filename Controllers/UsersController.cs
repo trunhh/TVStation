@@ -66,7 +66,7 @@ namespace TVStation.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize]
         public IActionResult GetAll([FromQuery] UserQuery query)
         {
             var queryable = _userManager.Users;
@@ -83,7 +83,7 @@ namespace TVStation.Controllers
                                                 || (u.Email != null && u.Email.Contains(query.Keyword)));
             }
 
-            return Ok(queryable.Select(u => u.Map<User, UserDTO>()));
+            return Ok(queryable.Select(u => u.Map<User, UsersDTO>()));
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using TVStation.Data.Constant;
-using TVStation.Data.Model.Plans.Productions;
-using TVStation.Data.Model.Plans.ProgramFrames;
 namespace TVStation.Data.Model
 {
     public class AppDbContext : IdentityDbContext<User>
@@ -12,16 +11,23 @@ namespace TVStation.Data.Model
         public virtual DbSet<SiteMap> SiteMap { get; set; }
         /*        public virtual DbSet<Domain.Task> Task { get; set; }
                 public virtual DbSet<WorkSchedule> WorkSchedule { get; set; }*/
-        public virtual DbSet<Event> ProgramFrameYear { get; set; }
-        public virtual DbSet<ProgramFrameWeek> ProgramFrameWeek { get; set; }
-        public virtual DbSet<ProgramFrameBroadcast> ProgramFrameBroadcast { get; set; }
-        public virtual DbSet<ProductionRegistration> ProductionRegistration { get; set; }
-        public virtual DbSet<ScriptProgram> ScriptProgram { get; set; }
-        public virtual DbSet<MediaProject> MediaProject { get; set; }
+        public virtual DbSet<Event> Event { get; set; }
+        public virtual DbSet<Channel> Channel { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Event>()
+            .HasOne(e => e.Creator)
+            .WithMany()
+            .HasForeignKey("CreatorId")
+            .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Event>()
+            .HasMany(e => e.Collaborators)
+            .WithMany(u => u.CollaboratingEvents)
+            .UsingEntity(j => j.ToTable("EventCollaborators"));
 
             List<IdentityRole> roles = new List<IdentityRole>()
             {

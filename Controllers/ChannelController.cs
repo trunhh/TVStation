@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TVStation.Data.Model;
-using TVStation.Data.DTO;
-using TVStation.Repositories.IRepositories;
 using TVStation.Data.Constant;
+using TVStation.Data.DTO;
+using TVStation.Data.Model;
+using TVStation.Repositories.IRepositories;
 
 namespace TVStation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SiteMapController : ControllerBase
+    public class ChannelController : ControllerBase
     {
-        private readonly ISiteMapRepository _repository;
+        private readonly IChannelRepository _repository;
 
-        public SiteMapController(ISiteMapRepository repository)
+        public ChannelController(IChannelRepository repository)
         {
             _repository = repository;
         }
@@ -21,7 +21,7 @@ namespace TVStation.Controllers
         [Authorize]
         public IActionResult GetAll()
         {
-            return Ok(_repository.GetAll().Select(sm => sm.Map<SiteMap, SiteMapDTO>()));
+            return Ok(_repository.GetAll());
         }
 
 
@@ -31,30 +31,33 @@ namespace TVStation.Controllers
         {
             var res = _repository.GetById(id);
             if (res == null) return NotFound();
-            return Ok(res.Map<SiteMap, SiteMapDTO>());
+            return Ok(res);
         }
 
         [HttpPost]
-       // [Authorize(Roles = UserRole.Admin)]
-        public IActionResult Create([FromBody] SiteMapCreateDTO dto)
+        // [Authorize(Roles = UserRole.Admin)]
+        public IActionResult Create([FromBody] ChannelCreateDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var siteMap = new SiteMap
+            var channel = new Channel
             {
                 Name = dto.Name,
-                CreatedDate = DateTime.Now,
+                Color = dto.Color,
+                BackgroundColor = dto.BackgroundColor,
+                BorderColor = dto.BorderColor,
+                DragBackgroundColor = dto.DragBackgroundColor,
             };
 
-            var result = _repository.Create(siteMap);
+            var result = _repository.Create(channel);
             if (result == null) return StatusCode(500);
 
-            return Ok(result.Map<SiteMap, SiteMapDTO>());
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = UserRole.Admin)]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] SiteMapDTO dto)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] Channel dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var data = _repository.GetById(id);
@@ -63,7 +66,7 @@ namespace TVStation.Controllers
             var result = _repository.Update(id, data);
             if (result == null) return StatusCode(500);
 
-            return Ok(result.Map<SiteMap, SiteMapDTO>());
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
