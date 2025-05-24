@@ -81,53 +81,6 @@ namespace TVStation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -136,7 +89,6 @@ namespace TVStation.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SiteMapId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -163,6 +115,71 @@ namespace TVStation.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
@@ -183,39 +200,92 @@ namespace TVStation.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Event",
+                name: "Programme",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ChanelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SiteMapId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ChannelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MediaUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sector = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Start = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Script = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RecurrenceRule = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsReadOnly = table.Column<bool>(type: "bit", nullable: false),
-                    IsAllday = table.Column<bool>(type: "bit", nullable: false)
+                    IsReadOnly = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Event", x => x.Id);
+                    table.PrimaryKey("PK_Programme", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Event_AspNetUsers_CreatorId",
-                        column: x => x.CreatorId,
+                        name: "FK_Programme_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Event_Channel_ChanelId",
-                        column: x => x.ChanelId,
+                        name: "FK_Programme_Channel_ChannelId",
+                        column: x => x.ChannelId,
                         principalTable: "Channel",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Programme_SiteMap_SiteMapId",
+                        column: x => x.SiteMapId,
+                        principalTable: "SiteMap",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Collab",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Permission = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProgrammeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Collab", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Collab_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Collab_Programme_ProgrammeId",
+                        column: x => x.ProgrammeId,
+                        principalTable: "Programme",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Episode",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProgrammeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Index = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Script = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MediaUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsReadOnly = table.Column<bool>(type: "bit", nullable: false),
+                    Start = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    End = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Episode", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Episode_Programme_ProgrammeId",
+                        column: x => x.ProgrammeId,
+                        principalTable: "Programme",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -223,10 +293,12 @@ namespace TVStation.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0b14f78d-8ca7-4c60-8995-cfe311cd0db3", "b1c49dff-8ebf-4f25-b818-84f93a353856", "DIRECTOR", "DIRECTOR" },
-                    { "72208770-a158-47ac-8c2a-a66a356dd9b3", "cf9019b9-04c1-4b2a-82ef-3247a56c4d86", "ADMIN", "ADMIN" },
-                    { "7a7a8ea3-7e3f-49d7-8520-a8992d32bb18", "cd97aa9a-07f9-47f1-a58d-1b7756a80d9c", "REPORTER", "REPORTER" },
-                    { "7dc5a250-3f1e-4c01-ba93-c23b47a12cb3", "2dc82365-91cc-4b27-9c9b-7aba3679f682", "MANAGER", "MANAGER" }
+                    { "37d05792-ad9c-4e5f-a2b4-04f1365a3b0f", "5151ce29-5e07-4bb2-9904-9724aa5c3dbb", "DIRECTOR", "DIRECTOR" },
+                    { "4f401eb9-11ec-4596-90bd-33b3779a6ec5", "1ec6412f-fb4c-4a75-9a65-59efb2d0a3e9", "ADMIN", "ADMIN" },
+                    { "9572f54d-d4c3-4dfd-90cb-dd7694c8265d", "441ae9c2-d867-489c-b68b-4d6ed8372e05", "REPORTER", "REPORTER" },
+                    { "af3d99df-b67c-4021-9fb6-60ef36be6d20", "70054d8e-6900-43c6-9155-68f9ca4f9f8c", "SCREENWRITER", "SCREENWRITER" },
+                    { "d1d278ce-14a1-4de3-b11a-3fe281f2e56f", "e22bb0f2-731a-44b2-b4af-0d07854844ad", "MANAGER", "MANAGER" },
+                    { "ef6c65b3-fe47-4013-8f1f-5cbeca1c4ec3", "28a8a67b-9ad4-44f5-a27b-08858caa8da9", "VIDEOEDITOR", "VIDEOEDITOR" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -262,11 +334,6 @@ namespace TVStation.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_EventId",
-                table: "AspNetUsers",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_SiteMapId",
                 table: "AspNetUsers",
                 column: "SiteMapId");
@@ -279,54 +346,39 @@ namespace TVStation.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Event_ChanelId",
-                table: "Event",
-                column: "ChanelId");
+                name: "IX_Collab_ProgrammeId",
+                table: "Collab",
+                column: "ProgrammeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Event_CreatorId",
-                table: "Event",
-                column: "CreatorId");
+                name: "IX_Collab_UserId",
+                table: "Collab",
+                column: "UserId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.CreateIndex(
+                name: "IX_Episode_ProgrammeId",
+                table: "Episode",
+                column: "ProgrammeId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.CreateIndex(
+                name: "IX_Programme_ChannelId",
+                table: "Programme",
+                column: "ChannelId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                table: "AspNetUserRoles",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.CreateIndex(
+                name: "IX_Programme_OwnerId",
+                table: "Programme",
+                column: "OwnerId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Event_EventId",
-                table: "AspNetUsers",
-                column: "EventId",
-                principalTable: "Event",
-                principalColumn: "Id");
+            migrationBuilder.CreateIndex(
+                name: "IX_Programme_SiteMapId",
+                table: "Programme",
+                column: "SiteMapId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Event_AspNetUsers_CreatorId",
-                table: "Event");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -343,19 +395,25 @@ namespace TVStation.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Collab");
+
+            migrationBuilder.DropTable(
+                name: "Episode");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Programme");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Event");
+                name: "Channel");
 
             migrationBuilder.DropTable(
                 name: "SiteMap");
-
-            migrationBuilder.DropTable(
-                name: "Channel");
         }
     }
 }

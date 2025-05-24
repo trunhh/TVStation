@@ -4,8 +4,8 @@ using TVStation.Data.QueryObject;
 
 namespace TVStation.Repositories.IRepositories
 {
-    public interface IEventRepository  : IGenericRepository<Event>
+    public interface IProgrammeRepository  : IGenericRepository<Programme>
     {
-        EventListDTO GetAll(EventQuery query);
+        ProgrammeListDTO GetAll(ProgrammeQuery query);
     }
 }

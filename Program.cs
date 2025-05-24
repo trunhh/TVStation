@@ -101,7 +101,8 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEpisodeRepository, EpisodeRepository>();
+builder.Services.AddScoped<IProgrammeRepository, ProgrammeRepository>();
 builder.Services.AddScoped<ISiteMapRepository, SiteMapRepository>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

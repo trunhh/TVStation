@@ -12,8 +12,8 @@ using TVStation.Data.Model;
 namespace TVStation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250519110022_AddEventCollaborators")]
-    partial class AddEventCollaborators
+    [Migration("20250524034212_Expand")]
+    partial class Expand
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace TVStation.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("EventUser", b =>
-                {
-                    b.Property<Guid>("CollaboratingEventsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CollaboratorsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CollaboratingEventsId", "CollaboratorsId");
-
-                    b.HasIndex("CollaboratorsId");
-
-                    b.ToTable("EventCollaborators", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -69,31 +54,45 @@ namespace TVStation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "436e7f07-9046-4e7e-8cce-783c18a28a96",
-                            ConcurrencyStamp = "3860f20c-b31e-4a87-b341-bf9900e94922",
+                            Id = "bd9d1a62-7c4d-43be-b056-b15f434c126f",
+                            ConcurrencyStamp = "d4201906-634b-4c74-8f6e-d9a0855bd4b3",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "61b850c6-628f-44e3-9cd9-d70d6dc1729e",
-                            ConcurrencyStamp = "1f4eb418-4bc9-487c-8021-4e132bf2d8d9",
+                            Id = "e7ed1537-fc70-44ab-a570-c9f334d987ee",
+                            ConcurrencyStamp = "3d96b739-e31e-4321-bcdb-9478ee60eddf",
                             Name = "DIRECTOR",
                             NormalizedName = "DIRECTOR"
                         },
                         new
                         {
-                            Id = "aa155b68-5163-4f67-bb69-8543fee5561b",
-                            ConcurrencyStamp = "ceb8c229-8150-4095-a26a-93eec612cd76",
+                            Id = "26b8d4ff-e4d5-494b-bcb1-00bb1564470c",
+                            ConcurrencyStamp = "5a61d634-46bf-4f72-b397-992a945fd220",
                             Name = "MANAGER",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "5017f36c-705a-4b9c-82f3-3b8e2c57b065",
-                            ConcurrencyStamp = "b5be22bd-ed22-4e05-8e1e-7124e03906a8",
+                            Id = "7c6fa34c-288b-4b98-befb-76593a9f04a7",
+                            ConcurrencyStamp = "9f7ed717-4a7e-49a9-8cea-fea582d7a864",
                             Name = "REPORTER",
                             NormalizedName = "REPORTER"
+                        },
+                        new
+                        {
+                            Id = "bb125071-5113-4a72-923b-5de644366b0b",
+                            ConcurrencyStamp = "7f441a08-f815-46e1-b348-8ff0159a46db",
+                            Name = "VIDEOEDITOR",
+                            NormalizedName = "VIDEOEDITOR"
+                        },
+                        new
+                        {
+                            Id = "1f988cff-ceec-4d63-be0c-ec702ba2f633",
+                            ConcurrencyStamp = "e80a02be-1a1c-47fd-a400-8057c4ffbc22",
+                            Name = "SCREENWRITER",
+                            NormalizedName = "SCREENWRITER"
                         });
                 });
 
@@ -209,24 +208,8 @@ namespace TVStation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("BackgroundColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BorderColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("DragBackgroundColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -240,30 +223,46 @@ namespace TVStation.Migrations
                     b.ToTable("Channel");
                 });
 
-            modelBuilder.Entity("TVStation.Data.Model.Event", b =>
+            modelBuilder.Entity("TVStation.Data.Model.Collab", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ChannelId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
+                    b.Property<string>("Permission")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProgrammeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProgrammeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Collab");
+                });
+
+            modelBuilder.Entity("TVStation.Data.Model.Episode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreatorId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("End")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsAllday")
-                        .HasColumnType("bit");
+                    b.Property<int>("Index")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -275,11 +274,10 @@ namespace TVStation.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RecurrenceRule")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("ProgrammeId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Sector")
+                    b.Property<string>("Script")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -290,7 +288,56 @@ namespace TVStation.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Summary")
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProgrammeId");
+
+                    b.ToTable("Episode");
+                });
+
+            modelBuilder.Entity("TVStation.Data.Model.Programme", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ChannelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("Duration")
+                        .HasColumnType("real");
+
+                    b.Property<int>("EpisodeCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsReadOnly")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Script")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("SiteMapId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -302,9 +349,11 @@ namespace TVStation.Migrations
 
                     b.HasIndex("ChannelId");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("OwnerId");
 
-                    b.ToTable("Event");
+                    b.HasIndex("SiteMapId");
+
+                    b.ToTable("Programme");
                 });
 
             modelBuilder.Entity("TVStation.Data.Model.SiteMap", b =>
@@ -410,21 +459,6 @@ namespace TVStation.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("EventUser", b =>
-                {
-                    b.HasOne("TVStation.Data.Model.Event", null)
-                        .WithMany()
-                        .HasForeignKey("CollaboratingEventsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TVStation.Data.Model.User", null)
-                        .WithMany()
-                        .HasForeignKey("CollaboratorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -476,20 +510,55 @@ namespace TVStation.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TVStation.Data.Model.Event", b =>
+            modelBuilder.Entity("TVStation.Data.Model.Collab", b =>
+                {
+                    b.HasOne("TVStation.Data.Model.Programme", "Programme")
+                        .WithMany("Collaborators")
+                        .HasForeignKey("ProgrammeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TVStation.Data.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Programme");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TVStation.Data.Model.Episode", b =>
+                {
+                    b.HasOne("TVStation.Data.Model.Programme", "Programme")
+                        .WithMany("Episodes")
+                        .HasForeignKey("ProgrammeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Programme");
+                });
+
+            modelBuilder.Entity("TVStation.Data.Model.Programme", b =>
                 {
                     b.HasOne("TVStation.Data.Model.Channel", "Channel")
                         .WithMany()
                         .HasForeignKey("ChannelId");
 
-                    b.HasOne("TVStation.Data.Model.User", "Creator")
+                    b.HasOne("TVStation.Data.Model.User", "Owner")
+                        .WithMany("CollaboratingProgrammes")
+                        .HasForeignKey("OwnerId");
+
+                    b.HasOne("TVStation.Data.Model.SiteMap", "SiteMap")
                         .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("SiteMapId");
 
                     b.Navigation("Channel");
 
-                    b.Navigation("Creator");
+                    b.Navigation("Owner");
+
+                    b.Navigation("SiteMap");
                 });
 
             modelBuilder.Entity("TVStation.Data.Model.User", b =>
@@ -501,9 +570,21 @@ namespace TVStation.Migrations
                     b.Navigation("SiteMap");
                 });
 
+            modelBuilder.Entity("TVStation.Data.Model.Programme", b =>
+                {
+                    b.Navigation("Collaborators");
+
+                    b.Navigation("Episodes");
+                });
+
             modelBuilder.Entity("TVStation.Data.Model.SiteMap", b =>
                 {
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("TVStation.Data.Model.User", b =>
+                {
+                    b.Navigation("CollaboratingProgrammes");
                 });
 #pragma warning restore 612, 618
         }

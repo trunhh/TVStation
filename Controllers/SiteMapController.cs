@@ -21,7 +21,7 @@ namespace TVStation.Controllers
         [Authorize]
         public IActionResult GetAll()
         {
-            return Ok(_repository.GetAll().Select(sm => sm.Map<SiteMap, SiteMapDTO>()));
+            return Ok(_repository.GetAll().Select(sm => new SimpleDTO { Value=sm.Id.ToString(), Label=sm.Name }));
         }
 
 
@@ -31,39 +31,39 @@ namespace TVStation.Controllers
         {
             var res = _repository.GetById(id);
             if (res == null) return NotFound();
-            return Ok(res.Map<SiteMap, SiteMapDTO>());
+            return Ok(new SimpleDTO { Value = res.Id.ToString(), Label = res.Name });
         }
 
         [HttpPost]
        // [Authorize(Roles = UserRole.Admin)]
-        public IActionResult Create([FromBody] SiteMapCreateDTO dto)
+        public IActionResult Create([FromBody] SimpleReqDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var siteMap = new SiteMap
             {
-                Name = dto.Name,
+                Name = dto.Value,
                 CreatedDate = DateTime.Now,
             };
 
             var result = _repository.Create(siteMap);
             if (result == null) return StatusCode(500);
 
-            return Ok(result.Map<SiteMap, SiteMapDTO>());
+            return Ok(new SimpleDTO { Value = result.Id.ToString(), Label = result.Name });
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = UserRole.Admin)]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] SiteMapDTO dto)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] SimpleReqDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var data = _repository.GetById(id);
             if (data == null) return NotFound();
-            data.Name = dto.Name;
+            data.Name = dto.Value;
             var result = _repository.Update(id, data);
             if (result == null) return StatusCode(500);
 
-            return Ok(result.Map<SiteMap, SiteMapDTO>());
+            return Ok(new SimpleDTO { Value = result.Id.ToString(), Label = result.Name });
         }
 
         [HttpDelete("{id}")]

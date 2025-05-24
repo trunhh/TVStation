@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TVStation.Data.Model;
 
@@ -11,9 +12,11 @@ using TVStation.Data.Model;
 namespace TVStation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523151802_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,43 +54,43 @@ namespace TVStation.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b5af321f-63e1-4e0c-8ad6-f0086b10e264",
-                            ConcurrencyStamp = "2d3b27d8-5f21-46e4-bbf5-556200192581",
+                            Id = "4f401eb9-11ec-4596-90bd-33b3779a6ec5",
+                            ConcurrencyStamp = "1ec6412f-fb4c-4a75-9a65-59efb2d0a3e9",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "21a677e8-9947-46ea-99f1-381ad73d8e7a",
-                            ConcurrencyStamp = "e680841d-9cdf-453e-8666-38c822bfe2bb",
+                            Id = "37d05792-ad9c-4e5f-a2b4-04f1365a3b0f",
+                            ConcurrencyStamp = "5151ce29-5e07-4bb2-9904-9724aa5c3dbb",
                             Name = "DIRECTOR",
                             NormalizedName = "DIRECTOR"
                         },
                         new
                         {
-                            Id = "7b57e19b-2797-4de7-bc41-49aa17d16243",
-                            ConcurrencyStamp = "916db8e0-8d41-434d-891b-4a197e134b9e",
+                            Id = "d1d278ce-14a1-4de3-b11a-3fe281f2e56f",
+                            ConcurrencyStamp = "e22bb0f2-731a-44b2-b4af-0d07854844ad",
                             Name = "MANAGER",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "08fd045c-3a82-4927-b7f7-8805514be98f",
-                            ConcurrencyStamp = "01a6d727-56c5-4790-b46f-102abbc4dca1",
+                            Id = "9572f54d-d4c3-4dfd-90cb-dd7694c8265d",
+                            ConcurrencyStamp = "441ae9c2-d867-489c-b68b-4d6ed8372e05",
                             Name = "REPORTER",
                             NormalizedName = "REPORTER"
                         },
                         new
                         {
-                            Id = "28e116a2-a7d2-4389-b64f-fde6be3c8024",
-                            ConcurrencyStamp = "ac5d0163-2174-41e2-8f97-554838b68fc7",
+                            Id = "ef6c65b3-fe47-4013-8f1f-5cbeca1c4ec3",
+                            ConcurrencyStamp = "28a8a67b-9ad4-44f5-a27b-08858caa8da9",
                             Name = "VIDEOEDITOR",
                             NormalizedName = "VIDEOEDITOR"
                         },
                         new
                         {
-                            Id = "538480c1-47fc-4c26-b4fd-c437fb711954",
-                            ConcurrencyStamp = "883a1a7d-0060-4ccb-9e0a-a85ea649d535",
+                            Id = "af3d99df-b67c-4021-9fb6-60ef36be6d20",
+                            ConcurrencyStamp = "70054d8e-6900-43c6-9155-68f9ca4f9f8c",
                             Name = "SCREENWRITER",
                             NormalizedName = "SCREENWRITER"
                         });
@@ -205,8 +208,24 @@ namespace TVStation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("BackgroundColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BorderColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DragBackgroundColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -308,16 +327,6 @@ namespace TVStation.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Duration")
-                        .HasColumnType("real");
-
-                    b.Property<int>("EpisodeNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -333,12 +342,6 @@ namespace TVStation.Migrations
 
                     b.Property<Guid?>("SiteMapId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
 
                     b.Property<string>("Status")
                         .IsRequired()

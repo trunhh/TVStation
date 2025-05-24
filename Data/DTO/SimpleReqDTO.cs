@@ -2,9 +2,9 @@
 
 namespace TVStation.Data.DTO
 {
-    public class SiteMapCreateDTO
+    public class SimpleReqDTO
     {
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 }

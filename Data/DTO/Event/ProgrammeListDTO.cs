@@ -2,10 +2,9 @@
 
 namespace TVStation.Data.DTO.Plans
 {
-    public class EventListDTO
+    public class ProgrammeListDTO
     {
-        public virtual List<EventResDTO> EventList { get; set; } = new List<EventResDTO>();
-        public virtual List<Channel> ChannelList { get; set; } = new List<Channel>();
+        public virtual List<Programme> List { get; set; } = new List<Programme>();
         public virtual int TotalCount { get; set; }
         public virtual int InProgressCount { get; set; }
         public virtual int WaitingApprovalCount { get; set; }

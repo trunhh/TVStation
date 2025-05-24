@@ -83,7 +83,7 @@ namespace TVStation.Controllers
                                                 || (u.Email != null && u.Email.Contains(query.Keyword)));
             }
 
-            return Ok(queryable.Select(u => u.Map<User, UsersDTO>()));
+            return Ok(queryable.Select(u => new SimpleDTO { Value = u.UserName, Label = u.Name }));
         }
     }
 }

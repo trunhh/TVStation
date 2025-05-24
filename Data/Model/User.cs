@@ -10,6 +10,6 @@ namespace TVStation.Data.Model
         public string AvatarUrl { get; set; } = string.Empty;
         public SiteMap? SiteMap { get; set; }
         [JsonIgnore]
-        public List<Event> CollaboratingEvents { get; set; } = new();
+        public List<Programme> CollaboratingProgrammes { get; set; } = new();
     }
 }

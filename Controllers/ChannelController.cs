@@ -21,7 +21,7 @@ namespace TVStation.Controllers
         [Authorize]
         public IActionResult GetAll()
         {
-            return Ok(_repository.GetAll());
+            return Ok(_repository.GetAll().Select(sm => new SimpleDTO { Value = sm.Id.ToString(), Label = sm.Name }));
         }
 
 
@@ -36,17 +36,13 @@ namespace TVStation.Controllers
 
         [HttpPost]
         // [Authorize(Roles = UserRole.Admin)]
-        public IActionResult Create([FromBody] ChannelCreateDTO dto)
+        public IActionResult Create([FromBody] SimpleReqDTO dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var channel = new Channel
             {
-                Name = dto.Name,
-                Color = dto.Color,
-                BackgroundColor = dto.BackgroundColor,
-                BorderColor = dto.BorderColor,
-                DragBackgroundColor = dto.DragBackgroundColor,
+                Name = dto.Value
             };
 
             var result = _repository.Create(channel);
