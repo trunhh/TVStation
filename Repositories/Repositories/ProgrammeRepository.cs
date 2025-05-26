@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TVStation.Data.Constant;
+using TVStation.Data.DTO;
 using TVStation.Data.DTO.Event;
-using TVStation.Data.DTO.Plans;
 using TVStation.Data.Model;
 using TVStation.Data.QueryObject;
 using TVStation.Repositories.IRepositories;
@@ -19,9 +19,9 @@ namespace TVStation.Repositories.Repositories
             return null;
         }
 
-        public ProgrammeListDTO GetAll(ProgrammeQuery query)
+        public List<Programme> GetAll(ProgrammeQuery query)
         {
-            var queryable = _context.Programme.Where(s => s.IsDeleted == false);
+            var queryable = _context.Programme.AsQueryable();
             if (!string.IsNullOrEmpty(query.Keyword)) queryable = queryable.Where(s => s.Title.Contains(query.Keyword));
             if (!string.IsNullOrEmpty(query.Status)) queryable = queryable.Where(s => s.Status == query.Status);
             
@@ -35,21 +35,14 @@ namespace TVStation.Repositories.Repositories
             queryable = queryable.Include(m => m.SiteMap);
             if (query.SiteMapId != null) queryable = queryable.Where(p => p.SiteMap != null && p.SiteMap.Id == query.SiteMapId);
 
-            return new ProgrammeListDTO
-            {
-                List = queryable.ToList(),
-                TotalCount = queryable.Count(),
-                ApprovedCount = queryable.Where(p => p.Status == PlanStatus.Approved).Count(),
-                InProgressCount = queryable.Where(p => p.Status == PlanStatus.InProgress).Count(),
-                WaitingApprovalCount = queryable.Where(p => p.Status == PlanStatus.WaitingForApproval).Count()
-            };
+            return queryable.ToList();
         }
 
         public override Programme? GetById(Guid id)
         {
             return _context.Programme
-                    .Where(s => s.Id.Equals(id) && s.IsDeleted == false)
-                    .Include(p => p.Collaborators)
+                    .Where(s => s.Id.Equals(id))
+                    .Include(p => p.Collaborators).ThenInclude(c => c.User)
                     .Include(m => m.Channel)
                     .Include(m => m.SiteMap)
                     .Include(p => p.Episodes)

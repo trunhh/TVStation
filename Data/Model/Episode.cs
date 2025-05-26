@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using TVStation.Data.DTO;
 
 namespace TVStation.Data.Model
 {
@@ -10,6 +11,7 @@ namespace TVStation.Data.Model
         public bool IsDeleted { get; set; } = false;
         [JsonIgnore]
         public Programme Programme { get; set; }
+        public SimpleDTO ProgSimple => (Programme != null) ? new SimpleDTO { Value = Programme.Id.ToString(), Label = Programme.Title } : new();
         public int Index { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Script { get; set; } = string.Empty;

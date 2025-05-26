@@ -6,13 +6,13 @@ namespace TVStation.Services
     {
         public static Dictionary<string, DayOfWeek> DaysOfWeekMap = new Dictionary<string, DayOfWeek>(StringComparer.OrdinalIgnoreCase)
         {
-            {"SU", DayOfWeek.Sunday},
-            {"MO", DayOfWeek.Monday},
-            {"TU", DayOfWeek.Tuesday},
-            {"WE", DayOfWeek.Wednesday},
-            {"TH", DayOfWeek.Thursday},
-            {"FR", DayOfWeek.Friday},
-            {"SA", DayOfWeek.Saturday}
+            {"Sunday", DayOfWeek.Sunday},
+            {"Monday", DayOfWeek.Monday},
+            {"Tuesday", DayOfWeek.Tuesday},
+            {"Wednesday", DayOfWeek.Wednesday},
+            {"Thursday", DayOfWeek.Thursday},
+            {"Friday", DayOfWeek.Friday},
+            {"Saturday", DayOfWeek.Saturday}
         };
 
 

@@ -1,4 +1,4 @@
-﻿using TVStation.Data.DTO.Plans;
+﻿using TVStation.Data.DTO;
 using TVStation.Data.Model;
 using TVStation.Data.QueryObject;
 
@@ -6,6 +6,6 @@ namespace TVStation.Repositories.IRepositories
 {
     public interface IProgrammeRepository  : IGenericRepository<Programme>
     {
-        ProgrammeListDTO GetAll(ProgrammeQuery query);
+        List<Programme> GetAll(ProgrammeQuery query);
     }
 }

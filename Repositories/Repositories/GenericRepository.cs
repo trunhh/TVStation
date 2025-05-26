@@ -20,18 +20,10 @@ namespace TVStation.Repositories.Repositories
             return entity;
         }
 
+
         public virtual T? Delete(Guid id)
         {
-            var entity = _context.Set<T>().FirstOrDefault(e => e.Id.Equals(id));
-            if (entity == null) throw new KeyNotFoundException("Data not found");
-            entity.IsDeleted = true;
-            _context.SaveChanges();
-            return entity;
-        }
-
-        public virtual T? DeletePermanent(Guid id)
-        {
-            var entity = _context.Set<T>().FirstOrDefault(e => e.Id.Equals(id));
+            var entity = GetById(id);
             if (entity == null) throw new KeyNotFoundException("Data not found");
             _context.Set<T>().Remove(entity);
             _context.SaveChanges();
@@ -40,17 +32,17 @@ namespace TVStation.Repositories.Repositories
 
         public virtual IEnumerable<T> GetAll()
         {
-            return _context.Set<T>().Where(s => s.IsDeleted == false);
+            return _context.Set<T>();
         }
 
         public virtual T? GetById(Guid id)
         {
-            return _context.Set<T>().Where(s => s.Id.Equals(id) && s.IsDeleted == false).FirstOrDefault();
+            return _context.Set<T>().Where(s => s.Id.Equals(id)).FirstOrDefault();
         }
 
         public virtual T? Update(Guid id, object entity)
         {
-            var tEntity = _context.Set<T>().FirstOrDefault(e => e.Id.Equals(id));
+            var tEntity = GetById(id);
             if (tEntity == null) throw new KeyNotFoundException("Data not found");
             _context.Entry(tEntity).CurrentValues.SetValues(entity);
             _context.Entry(tEntity).Property(x => x.Id).IsModified = false;

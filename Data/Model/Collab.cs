@@ -11,6 +11,8 @@ namespace TVStation.Data.Model
         public User User { get; set; }
         [NotMapped]
         public string UserName => User?.UserName ?? string.Empty;
+        [NotMapped]
+        public string SiteMapName => User?.SiteMap?.Name ?? string.Empty;
         [JsonIgnore]
         public Programme Programme { get; set; }
     }

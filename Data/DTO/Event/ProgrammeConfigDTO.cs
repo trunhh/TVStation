@@ -5,7 +5,7 @@ namespace TVStation.Data.DTO.Event
 {
     public class ProgrammeConfigDTO
     {
-
+        public string Title { get; set; } = string.Empty;
         public Channel? Channel { get; set; }
         public Guid ChannelId { get; set; }
         public SiteMap? SiteMap { get; set; }

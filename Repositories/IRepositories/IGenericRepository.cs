@@ -7,6 +7,5 @@
         T? Create(T entity);
         T? Update(Guid id,object entity);
         T? Delete(Guid id);
-        T? DeletePermanent(Guid id);
     }
 }
