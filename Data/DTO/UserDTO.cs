@@ -12,5 +12,6 @@ namespace TVStation.Data.DTO
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
         public Guid? SiteMapId {  get; set; }
+        public string? UserName { get; set; }
     }
 }

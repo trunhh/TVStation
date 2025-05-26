@@ -7,7 +7,12 @@ namespace TVStation.Data.DTO
     public class RegisterDTO
     {
         [Required]
-        public string? Username { get; set; }
+        public string? UserName { get; set; }
+        public string Name { get; set; } = string.Empty;
+        [Phone]
+        public string? PhoneNumber { get; set; }
+        [EmailAddress]
+        public string? Email { get; set; }
         [Required]
         public string Password { get; set; } = string.Empty;
         [Required]

@@ -36,8 +36,12 @@ namespace TVStation.Controllers
 
                 var user = new User
                 {
-                    UserName = dto.Username,
+                    UserName = dto.UserName,
                     SiteMap = siteMap,
+                    Email = dto.Email,
+                    PhoneNumber = dto.PhoneNumber,
+                    Name = dto.Name,
+                    
                 };
 
                 var createUser = _userManager.CreateAsync(user, dto.Password).GetAwaiter().GetResult();
@@ -64,9 +68,10 @@ namespace TVStation.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
             if (userIdClaim == null) return Unauthorized("User ID not found in claims.");
+
             var user = _userManager.Users
                 .Include(u => u.SiteMap)
-                .FirstOrDefaultAsync(u => u.Id == userIdClaim)
+                .FirstOrDefaultAsync(u => u.UserName == username)
                 .GetAwaiter().GetResult();
             if (user == null) return NotFound("User not found.");
             user.Name = dto.Name;
@@ -78,7 +83,7 @@ namespace TVStation.Controllers
         }
 
         [HttpGet("{username}")]
-        [Authorize(Roles = UserRole.Admin)]
+        //[Authorize(Roles = UserRole.Admin)]
         public IActionResult GetByUsername([FromRoute] string username)
         {
             var userIdClaim = User.FindFirst(ClaimName.Sub)?.Value;
