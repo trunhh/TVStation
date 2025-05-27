@@ -7,6 +7,8 @@ using TVStation.Repositories.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using TVStation.Data.QueryObject;
 using TVStation.Data.DTO.Event;
+using TVStation.Data.DTO;
+using TVStation.Services;
 
 namespace TVStation.Controllers
 {
@@ -62,9 +64,9 @@ namespace TVStation.Controllers
 
         }
 
-        [HttpPost("{progId}")]
+        [HttpPost()]
         [Authorize]
-        public IActionResult Create([FromRoute] Guid progId, [FromBody] EpisodeConfigDTO dto)
+        public IActionResult Create([FromBody] SimpleDTO dto)
         {
             try
             {
@@ -78,9 +80,24 @@ namespace TVStation.Controllers
                     .GetAwaiter().GetResult();
                 if (user == null) return NotFound("User not found.");
 
-                var ep = dto.Map<EpisodeConfigDTO, Episode>();
-                ep.CreatedDate = DateTime.Now;
-                ep.Status = PlanStatus.InProgress;
+                var programme = _programmeRepository.GetById(Guid.Parse(dto.Value));
+                if (programme == null) return NotFound("Program not found");
+
+                var lastEp = programme.Episodes.OrderByDescending(e => e.Start.Date).FirstOrDefault();
+
+                var occurs = OccurencesUtils.GetOccurrences(lastEp.Start, programme.Frequency, 2).Last();
+
+                var ep = new Episode
+                {
+                    Start = occurs,
+                    End = occurs.AddHours(programme.Duration),
+                    CreatedDate = DateTime.UtcNow,
+                    Status = PlanStatus.InProgress,
+                    IsDeleted = false,
+                    Programme = programme,
+                    Index = lastEp.Index + 1,
+                };
+
                 var conflicts = _repository.CheckSchedulingConflict(ep);
                 if (conflicts.Count > 0)
                 {
@@ -90,9 +107,7 @@ namespace TVStation.Controllers
                         error += " " + conflict.Title.ToString() + ": " + conflict.Start.ToString() + "-" + conflict.End.ToString() + ";";
                     }
                     return StatusCode(500, error);
-                }
-                ep.Programme = _programmeRepository.GetById(progId) ?? new();
-                ep.Index = _repository.GetNextIndex(progId);
+                }   
 
                 var result = _repository.Create(ep);
                 if (result == null) return StatusCode(500, "Failed to create");
